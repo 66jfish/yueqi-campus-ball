@@ -1,0 +1,217 @@
+/* ==========================================================================
+   全局样式 / 通用视觉部件（与设计稿同一套视觉语言，全站统一）
+   ========================================================================== */
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#app {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: var(--c-bg);
+  color: var(--c-text);
+  font-family: var(--el-font-family);
+  font-size: 14px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+}
+
+a {
+  color: var(--c-primary-dark);
+  text-decoration: none;
+}
+
+/* ---------------- 字体层级（对齐设计稿：主标题加粗大字号 / 辅助文字浅色小字号） ---------------- */
+.t-hero {
+  font-size: 26px;
+  line-height: 1.32;
+  font-weight: 800;
+  color: var(--c-text);
+  letter-spacing: -0.2px;
+}
+.t-section {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--c-text);
+}
+.t-card-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--c-text);
+}
+.t-body {
+  font-size: 13.5px;
+  color: var(--c-text-sub);
+}
+.t-meta {
+  font-size: 12.5px;
+  color: var(--c-text-muted);
+}
+.t-caption {
+  font-size: 11.5px;
+  color: var(--c-text-muted);
+}
+
+/* ---------------- 布局容器 ---------------- */
+.page {
+  max-width: var(--page-max);
+  margin: 0 auto;
+  padding: var(--sp-4);
+  padding-bottom: calc(var(--nav-h) + 24px); /* 手机端给底部导航留空间 */
+}
+@media (min-width: 768px) {
+  .page {
+    padding: var(--sp-5) var(--sp-6);
+    padding-bottom: 48px;
+  }
+}
+
+/* ---------------- 卡片（设计稿：白底大圆角 + 极浅描边 + 柔和阴影） ---------------- */
+.card {
+  background: var(--c-surface);
+  border: 1px solid var(--c-line-soft);
+  border-radius: var(--r-lg);
+  box-shadow: var(--sh-2);
+  padding: var(--sp-4);
+}
+.card--flat {
+  box-shadow: none;
+}
+.card--tap {
+  cursor: pointer;
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+.card--tap:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--sh-3);
+}
+.card__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-3);
+  margin-bottom: var(--sp-3);
+}
+
+/* ---------------- 区块标题（「附近热局 + 全部 >」） ---------------- */
+.section-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin: var(--sp-5) 0 var(--sp-3);
+}
+.section-head__more {
+  font-size: 13px;
+  color: var(--c-primary-dark);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* ---------------- 标签（还差2人 / 女生友好 / 今晚） ---------------- */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 22px;
+  padding: 0 9px;
+  border-radius: var(--r-pill);
+  font-size: 11.5px;
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+}
+.pill--primary {
+  background: var(--c-primary);
+  color: #fff;
+}
+.pill--green {
+  background: var(--c-green-soft);
+  color: #3f7a5c;
+}
+.pill--blue {
+  background: var(--c-blue-soft);
+  color: #3c6d8a;
+}
+.pill--pink {
+  background: var(--c-pink-soft);
+  color: #a2576a;
+}
+.pill--warn {
+  background: var(--c-warn-soft);
+  color: #9c6b12;
+}
+.pill--danger {
+  background: var(--c-danger-soft);
+  color: #a8442f;
+}
+.pill--ghost {
+  background: #fff;
+  border: 1px solid var(--c-line);
+  color: var(--c-text-sub);
+}
+
+/* ---------------- 手绘风描边按钮（加入球局） ---------------- */
+.btn-soft {
+  height: 34px;
+  padding: 0 16px;
+  border-radius: var(--r-pill);
+  border: none;
+  background: var(--c-primary-tint);
+  color: var(--c-text);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.16s ease, transform 0.16s ease;
+}
+.btn-soft:hover {
+  background: var(--c-primary-soft);
+}
+.btn-soft:active {
+  transform: scale(0.97);
+}
+.btn-soft:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+.btn-soft--primary {
+  background: var(--c-primary);
+  color: #fff;
+  box-shadow: var(--sh-primary);
+}
+
+/* ---------------- 距离开标签 / 分隔点 ---------------- */
+.dot-sep::before {
+  content: '·';
+  margin: 0 6px;
+  color: var(--c-text-muted);
+}
+
+/* ---------------- 骨架 / 空状态容器 ---------------- */
+.placeholder-box {
+  padding: 40px 16px;
+  text-align: center;
+  color: var(--c-text-muted);
+}
+
+/* ---------------- 安全区（iPhone 底部） ---------------- */
+.safe-bottom {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* ---------------- 滚动条（桌面） ---------------- */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-thumb {
+  background: #e0d7c8;
+  border-radius: 8px;
+}

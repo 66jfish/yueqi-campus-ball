@@ -1,0 +1,35 @@
+# ---- 环境变量与密钥（绝不提交）----
+.env
+.env.local
+.env.*.local
+campus_ball/.env
+frontend/.env.local
+
+# ---- Python ----
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# ---- Node / 构建产物 ----
+node_modules/
+frontend/dist/
+frontend/.vite/
+npm-debug.log*
+
+# ---- 工作区临时文件（分析报告、临时脚本、日志）----
+tmp/
+*.log
+*-analysis-*.md
+desktop-*-analysis-*.md
+mobile-*-analysis-*.md
+
+# ---- IDE / 系统 ----
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db

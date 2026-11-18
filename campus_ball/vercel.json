@@ -1,0 +1,27 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "version": 2,
+  "builds": [
+    {
+      "src": "api/index.py",
+      "use": "@vercel/python",
+      "config": { "maxLambdaSize": "20mb" }
+    }
+  ],
+  "routes": [
+    { "src": "/health", "dest": "api/index.py" },
+    { "src": "/(.*)", "dest": "api/index.py" }
+  ],
+  "crons": [
+    {
+      "path": "/api/v1/system/cron/daily",
+      "schedule": "0 3 * * *"
+    }
+  ],
+  "functions": {
+    "api/index.py": {
+      "memory": 1024,
+      "maxDuration": 30
+    }
+  }
+}

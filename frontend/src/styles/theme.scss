@@ -1,0 +1,208 @@
+/* ==========================================================================
+   猫球约 · 设计令牌（色值直接从设计稿像素中提取）
+   --------------------------------------------------------------------------
+   #F9F4E9  页面背景（暖米色，设计稿出现 51k 像素）
+   #DB9A64  主色（暖橙 / 陶土橙：立即约球按钮、状态标签）
+   #8EC5A7  辅助绿（选中球类卡边框、进度条）
+   #9CC9E3  辅助蓝（进度条）
+   #ECBFC7  辅助粉（女生友好标签）
+   #49413B  主文字（深棕灰）；#69625A 次要文字；#EAE3D6 描边
+   ========================================================================== */
+
+:root {
+  /* ---- 品牌色 ---- */
+  --c-bg: #f9f4e9;
+  --c-bg-soft: #faf5ea;
+  --c-surface: #ffffff;
+  --c-primary: #db9a64;
+  --c-primary-dark: #c9873f;
+  --c-primary-soft: #f4dfc9;
+  --c-primary-tint: #fbf1e5;
+
+  --c-green: #8ec5a7;
+  --c-green-soft: #e4f2ea;
+  --c-blue: #9cc9e3;
+  --c-blue-soft: #e6f2f8;
+  --c-pink: #ecbfc7;
+  --c-pink-soft: #fbeaee;
+
+  /* ---- 文字 ---- */
+  --c-text: #49413b;
+  --c-text-sub: #69625a;
+  --c-text-muted: #9a9188;
+  --c-text-invert: #ffffff;
+
+  /* ---- 描边 / 分割线 ---- */
+  --c-line: #eae3d6;
+  --c-line-soft: #f1ebe0;
+
+  /* ---- 状态 ---- */
+  --c-danger: #d9634f;
+  --c-danger-soft: #fbe6e1;
+  --c-warn: #e0a33c;
+  --c-warn-soft: #fdf1dc;
+
+  /* ---- 圆角（设计稿卡片为较大圆角） ---- */
+  --r-sm: 8px;
+  --r-md: 12px;
+  --r-lg: 16px;
+  --r-xl: 20px;
+  --r-pill: 999px;
+
+  /* ---- 阴影（柔和、低对比，贴合设计稿轻盈感） ---- */
+  --sh-1: 0 1px 2px rgba(73, 65, 59, 0.04);
+  --sh-2: 0 4px 14px rgba(73, 65, 59, 0.06);
+  --sh-3: 0 10px 28px rgba(73, 65, 59, 0.09);
+  --sh-primary: 0 8px 20px rgba(219, 154, 100, 0.32);
+
+  /* ---- 间距 ---- */
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-5: 20px;
+  --sp-6: 24px;
+
+  /* ---- 布局 ---- */
+  --nav-h: 60px;         /* 手机底部导航高度 */
+  --top-h: 56px;         /* 顶部品牌栏高度 */
+  --page-max: 1180px;    /* 桌面内容最大宽度 */
+}
+
+/* ==========================================================================
+   Element Plus 主题定制 —— 覆盖官方默认蓝白
+   通过官方 CSS 变量覆盖，覆盖范围：主色、圆角、阴影、组件样式
+   ========================================================================== */
+:root {
+  --el-color-primary: var(--c-primary);
+  --el-color-primary-light-3: #e5b78f;
+  --el-color-primary-light-5: #eccdae;
+  --el-color-primary-light-7: #f3dfc9;
+  --el-color-primary-light-8: #f7e8da;
+  --el-color-primary-light-9: var(--c-primary-tint);
+  --el-color-primary-dark-2: var(--c-primary-dark);
+
+  --el-color-success: #6fb392;
+  --el-color-success-light-9: var(--c-green-soft);
+  --el-color-warning: var(--c-warn);
+  --el-color-warning-light-9: var(--c-warn-soft);
+  --el-color-danger: var(--c-danger);
+  --el-color-danger-light-9: var(--c-danger-soft);
+  --el-color-error: var(--c-danger);
+  --el-color-info: #9a9188;
+
+  --el-text-color-primary: var(--c-text);
+  --el-text-color-regular: var(--c-text-sub);
+  --el-text-color-secondary: var(--c-text-muted);
+  --el-text-color-placeholder: #b7aea4;
+
+  --el-bg-color: var(--c-surface);
+  --el-bg-color-page: var(--c-bg);
+  --el-bg-color-overlay: var(--c-surface);
+  --el-fill-color-blank: var(--c-surface);
+  --el-border-color: var(--c-line);
+  --el-border-color-light: var(--c-line-soft);
+  --el-border-color-lighter: var(--c-line-soft);
+
+  --el-border-radius-base: 12px;
+  --el-border-radius-small: 8px;
+  --el-border-radius-round: 999px;
+
+  --el-font-family: 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Helvetica Neue', Arial, sans-serif;
+
+  --el-box-shadow-light: var(--sh-2);
+  --el-box-shadow: var(--sh-3);
+
+  --el-component-size: 42px;          /* 表单控件更高，贴合设计稿的松弛感 */
+  --el-component-size-large: 48px;
+  --el-component-size-small: 34px;
+}
+
+/* ---- 组件级定制 ---- */
+.el-button {
+  border-radius: var(--r-pill);
+  font-weight: 600;
+  letter-spacing: 0.2px;
+  transition: transform 0.16s ease, box-shadow 0.16s ease, background-color 0.16s ease;
+}
+.el-button:not(.is-text):not(.is-link):active {
+  transform: scale(0.97);
+}
+/* 主按钮：设计稿中的橙色实心圆角按钮 + 柔和投影 */
+.el-button--primary {
+  box-shadow: var(--sh-primary);
+  border-color: transparent;
+}
+.el-button--primary:hover {
+  background-color: var(--c-primary-dark);
+  border-color: transparent;
+}
+/* 次按钮：设计稿中的浅米色底 + 深灰文字 */
+.el-button--default {
+  background-color: var(--c-primary-tint);
+  border-color: transparent;
+  color: var(--c-text);
+}
+.el-button--default:hover {
+  background-color: var(--c-primary-soft);
+  border-color: transparent;
+  color: var(--c-text);
+}
+.el-button.is-loading {
+  opacity: 0.85;
+}
+
+.el-card {
+  border-radius: var(--r-lg);
+  border-color: var(--c-line-soft);
+  box-shadow: var(--sh-2);
+}
+.el-input__wrapper,
+.el-textarea__inner,
+.el-select__wrapper {
+  border-radius: var(--r-md);
+  background-color: #fff;
+  box-shadow: 0 0 0 1px var(--c-line) inset;
+}
+.el-input__wrapper.is-focus,
+.el-textarea__inner:focus,
+.el-select__wrapper.is-focused {
+  box-shadow: 0 0 0 1.5px var(--c-primary) inset;
+}
+.el-tag {
+  border-radius: var(--r-pill);
+  border: none;
+  font-weight: 500;
+}
+.el-dialog {
+  border-radius: var(--r-xl);
+  padding: var(--sp-5);
+}
+.el-dialog__title {
+  font-weight: 700;
+  color: var(--c-text);
+}
+.el-message {
+  border-radius: var(--r-pill);
+  box-shadow: var(--sh-3);
+}
+.el-message-box {
+  border-radius: var(--r-xl);
+}
+.el-drawer {
+  border-radius: var(--r-xl) var(--r-xl) 0 0;
+}
+.el-progress-bar__outer {
+  border-radius: var(--r-pill);
+  background-color: var(--c-line-soft);
+}
+.el-progress-bar__inner {
+  border-radius: var(--r-pill);
+}
+.el-form-item__label {
+  font-weight: 600;
+  color: var(--c-text-sub);
+}
+.el-empty__description {
+  color: var(--c-text-muted);
+}
