@@ -2,7 +2,8 @@
 /**
  * 球局广场（首页）—— 复刻设计稿
  *   ① 顶部品牌区由 AppLayout 统一承载（品牌名 + 标语 + 右侧圆形猫头）
- *   ② 核心行动区：主标题「和校猫一起 约一场不掉线的球」+ 橙色「立即约球」按钮
+ *   ② 核心行动区：主标题「在月球，找到你的约球搭子
+约一场不掉线的球」+ 橙色「立即约球」按钮
  *   ③ 球类选择区：2x2 网格（手机）/ 6 列（桌面）
  *   ④ 附近热局：卡片列表（手机单列、平板两列、桌面三列）+「全部 >」入口
  *   ⑤ 筛选：球类 / 校区 / 只看可报名
@@ -31,7 +32,7 @@ const total = ref(0)
 const filters = ref({ sport_type: 0, campus: '', only_available: true, page: 1, page_size: 9 })
 const campuses = ['东校区', '西校区', '南区']
 
-const heroTitle = '和校猫一起\n约一场不掉线的球'
+const heroTitle = '在月球，找到你的约球搭子\n约一场不掉线的球'
 
 async function load() {
   loading.value = true
@@ -107,7 +108,7 @@ const shownCount = computed(() => games.value.length)
     <section class="hero">
       <div class="hero__text">
         <h1 class="t-hero">{{ heroTitle }}</h1>
-        <p class="hero__sub">本周校猫值班 · 白芷｜每天都有 12+ 个球局在等你</p>
+        <p class="hero__sub">本周月球值日 · 白芷｜每天都有 12+ 个球局在等你</p>
         <div class="hero__actions">
           <el-button type="primary" size="large" round @click="goCreate">
             <el-icon><Plus /></el-icon>&nbsp;立即约球
@@ -117,7 +118,7 @@ const shownCount = computed(() => games.value.length)
       </div>
       <div class="hero__art" aria-hidden="true">
         <span class="hero__blob" />
-        <span class="hero__badge">校猫监督 · 不掉线</span>
+        <span class="hero__badge">月球监督 · 不掉线</span>
       </div>
     </section>
 

@@ -1,4 +1,4 @@
-# 猫球约 · 校园 AI 约球平台（monorepo）
+# 搭子月球 · 搭子月球（monorepo）
 
 Vue3 + Element Plus 前端 ｜ FastAPI + TiDB 后端（Vercel Serverless 部署）
 

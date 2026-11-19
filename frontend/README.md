@@ -1,4 +1,4 @@
-# 猫球约 · 校园AI约球平台前端
+# 搭子月球 · 搭子月球前端
 
 Vue3 + Vite + Element Plus + Pinia + axios，响应式适配手机 / 平板 / 电脑，对接后端全部接口。
 
@@ -153,7 +153,7 @@ frontend/dist/           ← ★ npm run build 的产物目录（vite.config.js:
 | `VITE_API_BASE_URL` | ✅ **必需** | `https://api.example.com/api/v1`（**必须带 `/api/v1`，结尾不要加 `/`**） |
 | `VITE_USE_MOCK` | ✅ 建议 | 生产填 `false`（填 `true` 会走内置假数据、不请求后端） |
 | `VITE_API_TIMEOUT` | 可选 | `15000`（毫秒） |
-| `VITE_APP_TITLE` | 可选 | `猫球约 · 校园AI约球平台` |
+| `VITE_APP_TITLE` | 可选 | `搭子月球 · 搭子月球` |
 
 > ⚠️ Vite 只把 `VITE_` 前缀的变量注入前端。**不要**把数据库密码、JWT 密钥等敏感信息放进前端环境变量，
 > 它们会被打进 JS 产物里（`JWT_SECRET_KEY` 只配在后端）。

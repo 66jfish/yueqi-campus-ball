@@ -1,4 +1,4 @@
-# 校园 AI 约球平台 · 后端脚手架（FastAPI + MySQL）
+# 搭子月球 · 后端脚手架（FastAPI + MySQL）
 
 > 技术栈：Python FastAPI + MySQL 8 + SQLAlchemy 2.0（异步）+ JWT（PyJWT）
 > 前端配套：Vue3 + Element Plus，响应式（手机 / 平板 / 桌面自适应）

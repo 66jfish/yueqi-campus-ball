@@ -78,7 +78,7 @@ mysql --host <Host> --port 4000 --user <User> -p --ssl-mode=REQUIRED campus_ball
 cd <仓库根>                       # 内含 campus_ball/ 与 frontend/
 git init
 git add .
-git commit -m "feat: 猫球约 校园AI约球平台（FastAPI + TiDB + Vue3）"
+git commit -m "feat: 搭子月球 搭子月球（FastAPI + TiDB + Vue3）"
 git branch -M main
 git remote add origin https://github.com/<你的账号>/<仓库名>.git
 git push -u origin main
@@ -182,7 +182,7 @@ CORS_ORIGINS=https://maoqiu.vercel.app,http://localhost:5173
 | 变量名 | 默认 | 说明 |
 | --- | --- | --- |
 | `VITE_API_TIMEOUT` | `15000` | 请求超时（毫秒） |
-| `VITE_APP_TITLE` | `猫球约 · 校园AI约球平台` | 浏览器标题 |
+| `VITE_APP_TITLE` | `搭子月球 · 搭子月球` | 浏览器标题 |
 
 > ⚠️ **不要把 `JWT_SECRET_KEY`、DB 密码放到前端项目**——Vite 会把 `VITE_*` 变量打进 JS 产物，等于公开密钥。
 > ⚠️ Vite 变量是**构建期注入**，改完必须 Redeploy，且需清一次浏览器缓存。

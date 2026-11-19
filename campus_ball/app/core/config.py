@@ -35,7 +35,7 @@ class Settings(BaseSettings):
     # ------------------------------------------------------------------
     # 基础信息
     # ------------------------------------------------------------------
-    PROJECT_NAME: str = "校园 AI 约球平台"
+    PROJECT_NAME: str = "搭子月球"
     ENV: str = "dev"                                  # dev / test / prod
     DEBUG: bool = False
     API_V1_PREFIX: str = "/api/v1"                    # 所有业务接口统一前缀

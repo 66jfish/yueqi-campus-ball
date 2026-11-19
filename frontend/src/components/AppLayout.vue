@@ -35,8 +35,8 @@ function go(name) {
         <RouterLink to="/" class="brand">
           <CatIcon :size="30" color="#DB9A64" />
           <span class="brand__text">
-            <span class="brand__name">猫球约</span>
-            <span class="brand__slogan">让每个球局都有猫监督</span>
+            <span class="brand__name">搭子月球</span>
+            <span class="brand__slogan">在月球，找到你的约球搭子</span>
           </span>
         </RouterLink>
 

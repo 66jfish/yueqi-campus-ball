@@ -1,8 +1,8 @@
 {
-  "name": "maoqiu-yue-frontend",
+  "name": "dazi-moon-frontend",
   "version": "1.0.0",
   "private": true,
-  "description": "猫球约 · 校园AI约球平台前端（Vue3 + Element Plus，响应式）",
+  "description": "搭子月球 · 搭子月球前端（Vue3 + Element Plus，响应式）",
   "type": "module",
   "scripts": {
     "dev": "vite",

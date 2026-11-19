@@ -66,7 +66,7 @@ router.beforeEach((to) => {
     return { name: 'login', query: { redirect: to.fullPath } }
   }
   if (to.meta.title) {
-    document.title = `${to.meta.title} · ${import.meta.env.VITE_APP_TITLE || '猫球约'}`
+    document.title = `${to.meta.title} · ${import.meta.env.VITE_APP_TITLE || '搭子月球'}`
   }
   return true
 })

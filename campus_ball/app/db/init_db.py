@@ -47,7 +47,7 @@ async def create_tables(drop_first: bool = False) -> None:
 
 
 async def main() -> None:
-    parser = argparse.ArgumentParser(description="校园 AI 约球平台 - 数据库初始化")
+    parser = argparse.ArgumentParser(description="搭子月球 - 数据库初始化")
     parser.add_argument("--drop", action="store_true", help="先删除已有表（仅开发环境）")
     args = parser.parse_args()
 

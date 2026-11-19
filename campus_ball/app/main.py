@@ -188,7 +188,7 @@ def create_app() -> FastAPI:
         title=settings.PROJECT_NAME,
         version=settings.VERSION,
         description=(
-            "校园 AI 约球平台后端接口：用户认证（bcrypt + JWT）、约球、报名、签到、"
+            "搭子月球后端接口：用户认证（bcrypt + JWT）、约球、报名、签到、"
             "失信小黑屋、AI 信誉画像。\n\n"
             "**鉴权方式**：先调用 `/api/v1/auth/login` 获取 `access_token`，"
             "再点击右上角 Authorize 填入令牌（或请求头 `Authorization: Bearer <token>`）。"

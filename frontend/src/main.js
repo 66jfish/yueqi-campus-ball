@@ -22,6 +22,6 @@ app.use(createPinia())
 app.use(router)
 app.use(ElementPlus, { locale: zhCn })
 
-document.title = import.meta.env.VITE_APP_TITLE || '猫球约'
+document.title = import.meta.env.VITE_APP_TITLE || '搭子月球'
 
 app.mount('#app')

@@ -28,7 +28,7 @@ const SPORT = {
   6: { name: '乒乓球', cat: '团子' }
 }
 
-const sport = computed(() => SPORT[props.game.sport_type] || { name: '运动', cat: '校猫' })
+const sport = computed(() => SPORT[props.game.sport_type] || { name: '运动', cat: '月球' })
 
 /** 标题已含球类名时不再重复前缀（避免出现「羽毛球·羽毛球·双打」） */
 const displayTitle = computed(() => {

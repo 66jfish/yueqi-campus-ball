@@ -111,7 +111,7 @@ function switchMode() {
         <div class="auth__brand">
           <CatIcon :size="56" color="#DB9A64" />
           <h1 class="t-hero">和校猫一起<br />约一场不掉线的球</h1>
-          <p class="t-body">让每个球局都有猫监督 —— 签到核销、失信小黑屋、AI 信誉画像，一个都不少。</p>
+          <p class="t-body">在月球，找到你的约球搭子 —— 签到核销、失信小黑屋、AI 信誉画像，一个都不少。</p>
           <ul class="auth__points">
             <li><span class="pill pill--green">签到 +2</span>按时到场，信誉分会慢慢涨</li>
             <li><span class="pill pill--danger">缺席 -10</span>放鸽子会被关进小黑屋禁赛 3 天</li>
