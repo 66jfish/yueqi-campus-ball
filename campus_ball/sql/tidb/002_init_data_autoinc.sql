@@ -65,9 +65,9 @@ INSERT INTO `t_game`
      `max_players`, `min_players`, `current_players`, `fee_type`,
      `skill_level_limit`, `gender_limit`, `min_credit_score`, `status`, `settle_status`)
 SELECT @u1, 1, '周五晚老校区篮球局', '水平不限，重在参与，请自备球鞋与水', '老校区', '老校区体育馆 3 号场', '老校区体育馆一层',
-       DATE_ADD(NOW(), INTERVAL 1 DAY), DATE_ADD(NOW(), INTERVAL 1 DAY + INTERVAL 2 HOUR),
+       DATE_ADD(NOW(), INTERVAL 1 DAY), NOW() + INTERVAL 1 DAY + INTERVAL 2 HOUR,
        DATE_ADD(NOW(), INTERVAL 20 HOUR),
-       DATE_ADD(NOW(), INTERVAL 23 HOUR + INTERVAL 30 MINUTE), DATE_ADD(NOW(), INTERVAL 1 DAY + INTERVAL 15 MINUTE),
+       NOW() + INTERVAL 23 HOUR + INTERVAL 30 MINUTE, NOW() + INTERVAL 1 DAY + INTERVAL 15 MINUTE,
        10, 4, 2, 0, 0, 0, 0, 1, 0
 FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `t_game` WHERE `title` = '周五晚老校区篮球局' AND `is_deleted` = 0);
 
@@ -78,11 +78,11 @@ INSERT INTO `t_game`
      `max_players`, `min_players`, `current_players`, `fee_type`, `fee_amount`,
      `skill_level_limit`, `gender_limit`, `min_credit_score`, `status`, `settle_status`, `settled_at`)
 SELECT @u2, 3, '新校区羽毛球双打（已结束）', '已结算：到场 +2、缺席 -10', '新校区', '新校区风雨操场羽毛球场', '风雨操场一层',
-       DATE_SUB(NOW(), INTERVAL 2 DAY), DATE_SUB(NOW(), INTERVAL 2 DAY + INTERVAL 2 HOUR),
-       DATE_SUB(NOW(), INTERVAL 2 DAY + INTERVAL 6 HOUR),
-       DATE_SUB(NOW(), INTERVAL 2 DAY + INTERVAL 1 HOUR), DATE_SUB(NOW(), INTERVAL 2 DAY + INTERVAL 30 MINUTE),
+       DATE_SUB(NOW(), INTERVAL 2 DAY), NOW() - INTERVAL 2 DAY - INTERVAL 2 HOUR,
+       NOW() - INTERVAL 2 DAY - INTERVAL 6 HOUR,
+       NOW() - INTERVAL 2 DAY - INTERVAL 1 HOUR, NOW() - INTERVAL 2 DAY - INTERVAL 30 MINUTE,
        4, 2, 2, 1, 8.00,
-       2, 0, 0, 4, 1, DATE_SUB(NOW(), INTERVAL 2 DAY + INTERVAL 30 MINUTE)
+       2, 0, 0, 4, 1, NOW() - INTERVAL 2 DAY - INTERVAL 30 MINUTE
 FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `t_game` WHERE `title` = '新校区羽毛球双打（已结束）' AND `is_deleted` = 0);
 
 SET @g1 := (SELECT `id` FROM `t_game` WHERE `title` = '周五晚老校区篮球局' ORDER BY `id` LIMIT 1);
@@ -121,14 +121,14 @@ FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `t_checkin_record` WHERE `game_id` = @
 -- 球局二（已结算）：@u1 正常签到 +2；@u3 缺席 -10（缺席来源 → 封禁依据）
 INSERT INTO `t_checkin_record` (`game_id`, `user_id`, `checkin_status`, `checkin_type`, `checkin_time`,
                                 `checkin_operator_id`, `credit_delta`, `settled`, `settled_at`, `remark`)
-SELECT @g2, @u1, 1, 3, DATE_SUB(NOW(), INTERVAL 2 DAY + INTERVAL 45 MINUTE),
-       @u2, 2, 1, DATE_SUB(NOW(), INTERVAL 2 DAY + INTERVAL 30 MINUTE), '组织者现场核销'
+SELECT @g2, @u1, 1, 3, NOW() - INTERVAL 2 DAY - INTERVAL 45 MINUTE,
+       @u2, 2, 1, NOW() - INTERVAL 2 DAY - INTERVAL 30 MINUTE, '组织者现场核销'
 FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `t_checkin_record` WHERE `game_id` = @g2 AND `user_id` = @u1);
 
 INSERT INTO `t_checkin_record` (`game_id`, `user_id`, `checkin_status`, `checkin_type`, `checkin_time`,
                                 `absence_confirmed_by`, `absence_confirmed_at`, `credit_delta`, `settled`, `settled_at`)
 SELECT @g2, @u3, 3, NULL, NULL,
-       0, DATE_SUB(NOW(), INTERVAL 2 DAY + INTERVAL 30 MINUTE), -10, 1, DATE_SUB(NOW(), INTERVAL 2 DAY + INTERVAL 30 MINUTE)
+       0, NOW() - INTERVAL 2 DAY - INTERVAL 30 MINUTE, -10, 1, NOW() - INTERVAL 2 DAY - INTERVAL 30 MINUTE
 FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `t_checkin_record` WHERE `game_id` = @g2 AND `user_id` = @u3);
 
 -- ---------------------------------------------------------------- 5. 小黑屋（演示封禁中的账号）
