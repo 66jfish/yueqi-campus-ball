@@ -89,21 +89,59 @@ if [[ "$SANITIZE" == "1" ]]; then
   echo "      ✓ 已脱敏手机号（--sanitize）"
 fi
 git add "$TARGET"
-git commit -m "chore: 归档数据库备份 final_backup.sql（含演示数据与演示账号）" || echo "      （无变化，跳过提交）"
+# ★ 提交：显式带上身份，避免服务器未配置 user.name/user.email 时提交失败被静默跳过
+#   （上一版用 `|| echo` 吞掉了失败，导致「本地没提交 → push 变空操作」却仍显示完成）
+if git diff --cached --quiet; then
+  echo "      （文件无变化，跳过提交）"
+else
+  if ! git -c "user.name=${GIT_NAME:-ubuntu}" -c "user.email=${GIT_EMAIL:-ubuntu@localhost}" \
+       commit -m "chore: 归档数据库备份 final_backup.sql（含演示数据与演示账号）"; then
+    echo "      ✗ 提交失败，已中止（请检查 git 身份或文件权限）"; exit 1
+  fi
+  echo "      ✓ 已提交：$(git log --oneline -1)"
+fi
+LOCAL_SHA="$(git rev-parse HEAD)"
 
 echo "[4/4] 推送双平台"
-# Gitee remote 不存在时自动补上（服务器通常只 clone 了 GitHub）
 if ! git remote get-url gitee >/dev/null 2>&1; then
   git remote add gitee https://gitee.com/j_66_fish/yueqi-campus-ball.git
   echo "      已添加 gitee 远端：https://gitee.com/j_66_fish/yueqi-campus-ball.git"
 fi
-git push origin main && echo "      ✓ GitHub(origin) 已推送" || echo "      ✗ GitHub 推送失败（网络或认证），稍后可用 git push origin main 重试"
-if git push gitee main; then
-  echo "      ✓ Gitee(gitee) 已推送"
-else
-  echo "      ✗ Gitee 推送失败（通常是服务器没有 Gitee 凭据），改用一次性 URL："
-  echo "        git push https://j_66_fish:<你的GiteeToken>@gitee.com/j_66_fish/yueqi-campus-ball.git main:main"
+
+push_one() {
+  local label="$1"; shift
+  if "$@" >/dev/null 2>&1; then
+    echo "      ✓ $label 已推送"
+  else
+    echo "      ✗ $label 推送失败（认证或网络）。可改用手动命令后重试。"
+    return 1
+  fi
+}
+OK_GH=0; OK_GT=0
+push_one "GitHub(origin)" git push origin main && OK_GH=1
+push_one "Gitee(gitee)"   git push gitee main  && OK_GT=1
+
+# ★ 推送后校验：远端是否真的收到本次提交（避免「空操作也报成功」）
+git fetch origin main --quiet 2>/dev/null || true
+REMOTE_SHA="$(git rev-parse origin/main 2>/dev/null || echo '')"
+echo
+echo "==================== 结果汇总 ===================="
+echo "  备份文件      : $TARGET（$(wc -c < "$TARGET") 字节，已含 CREATE TABLE）"
+echo "  本地提交      : $LOCAL_SHA"
+echo "  GitHub 远端   : ${REMOTE_SHA:-未知} $([[ "$REMOTE_SHA" == "$LOCAL_SHA" ]] && echo '← 与本地一致 ✓' || echo '← 与本地不一致 ✗')"
+echo "  GitHub 推送   : $([[ $OK_GH == 1 ]] && echo '成功' || echo '失败')"
+echo "  Gitee  推送   : $([[ $OK_GT == 1 ]] && echo '成功' || echo '失败')"
+if [[ $OK_GH == 0 || $OK_GT == 0 ]]; then
+  cat <<'TIP'
+--------------------------------------------------
+  推送失败通常是服务器没有对应平台凭据。手动补推（一次性 URL，用完请轮换 Token）：
+    git push https://66jfish:<GitHubToken>@github.com/66jfish/yueqi-campus-ball.git main:main
+    git push https://j_66_fish:<GiteeToken>@gitee.com/j_66_fish/yueqi-campus-ball.git main:main
+  注意 Gitee 的用户名是 j_66_fish（带下划线），密码要填「私人令牌」而不是登录密码。
+--------------------------------------------------
+TIP
 fi
+echo "================================================="
 
 echo
 echo "完成。仓库内路径：$TARGET"
