@@ -1,0 +1,69 @@
+# 一键起「后端 API + MySQL 8」，用于本地开发 / 云服务器部署
+# ---------------------------------------------------------------------------
+# 用法（在 campus_ball 目录下）：
+#   docker compose up -d --build
+#   浏览器打开 http://<服务器IP>:8000/docs
+#
+# 首次启动会自动执行 sql/tidb/001_schema.sql（建 5 张表）
+# 与 sql/tidb/002_init_data.sql（写入 3 个演示账号，密码均为 123456）
+# 注：TiDB 版 SQL 同时兼容 MySQL（去掉了 CREATE DATABASE/USE，改为由 MYSQL_DATABASE 指定）
+# ---------------------------------------------------------------------------
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: yueqi-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-ChangeMe_Root_123}
+      MYSQL_DATABASE: campus_ball
+      MYSQL_USER: ${DB_USER:-yueqi}
+      MYSQL_PASSWORD: ${DB_PASSWORD:-ChangeMe_User_123}
+      TZ: Asia/Shanghai
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+      - --default-time-zone=+08:00
+    volumes:
+      - mysql_data:/var/lib/mysql
+      # 首次初始化时自动建表 + 灌演示数据（按文件名顺序执行）
+      - ./sql/tidb/001_schema.sql:/docker-entrypoint-initdb.d/01_schema.sql:ro
+      - ./sql/tidb/002_init_data.sql:/docker-entrypoint-initdb.d/02_data.sql:ro
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-p${MYSQL_ROOT_PASSWORD:-ChangeMe_Root_123}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    # 生产环境请只对后端容器暴露，不要映射到公网
+    ports:
+      - "127.0.0.1:3306:3306"
+
+  api:
+    build: .
+    container_name: yueqi-api
+    restart: unless-stopped
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      ENV: prod
+      DEBUG: "false"
+      SERVERLESS_MODE: "false"          # 常驻模式：启用连接池 + 进程内定时任务
+      DB_HOST: mysql
+      DB_PORT: "3306"
+      DB_USER: ${DB_USER:-yueqi}
+      DB_PASSWORD: ${DB_PASSWORD:-ChangeMe_User_123}
+      DB_NAME: campus_ball
+      DB_REQUIRE_SSL: "false"           # 容器内网直连，无需 TLS
+      DB_USE_NULL_POOL: "false"
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY:?请在 .env 里配置 JWT_SECRET_KEY}
+      CRON_SECRET: ${CRON_SECRET:-}
+      CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:5173}
+      DEEPSEEK_API_KEY: ${DEEPSEEK_API_KEY:-}
+      AI_ENABLED: "true"
+      BAN_DEFAULT_DAYS: "3"
+      CREDIT_BAN_THRESHOLD: "60"
+    ports:
+      - "8000:8000"
+
+volumes:
+  mysql_data:
