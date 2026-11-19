@@ -1,0 +1,26 @@
+球局id=1
+账号 C/A/B = c443418/a443418/b443418
+
+01 home ← 首页：校区筛选(老校区/新校区/校外) + 新猫名
+02 register-form ← 注册表单：已无「球技水平」项
+03 campus-options ← 校区仅三项：老校区 / 新校区 / 校外
+04 register-success ← 注册成功并自动登录
+05 error-create ← TimeoutError: locator.fill: Timeout 30000ms exceeded.
+Call log:
+[2m  
+06 game-detail ← 球局详情（校外场地 + 最低水平要求）
+07 signup-dialog-required ← 报名弹窗：水平必填
+08 signup-blocked-no-skill ← 未选水平 → 被拒（不填不能报名）
+09 signup-A-success ← A 报名成功（自评高级，满足最低「初级」）
+10 signup-B-success ← B 报名成功（自评初级）
+11 verify-roster ← 核销名单：每人显示水平 + 信誉分
+12 verify-selected ← 勾选发起人 + A（B 故意不核销）
+13 verify-result ← 核销结果：信誉分 +2（惰性结算）
+14 finish-confirm ← 二次确认：缺席将扣 10 分并禁赛
+15 finish-done ← 球局结束，B 被判缺席 -10 分
+16 ban-detail-visible ← 被封禁用户仍可浏览球局（查询不被拦）
+17 ban-403-dialog ← 403 小黑屋弹窗：禁赛文案 + 解禁时间
+18 profile-B-banned-banner ← B 个人主页：红色禁赛横幅 + 解禁倒计时
+19 profile-B-breakdown ← 信誉分怎么来的 + 常打项目
+20 profile-A-credit ← A：签到 +2 后的信誉分 + 最近自评水平
+21 mobile-home ← 手机端首页（2 列球类 + 底部导航）

@@ -165,7 +165,7 @@ async function submit() {
           </el-form-item>
 
           <el-form-item label="球局标题" prop="title">
-            <el-input v-model="form.title" maxlength="64" show-word-limit placeholder="如：周五晚东区羽毛球双打" />
+            <el-input v-model="form.title" maxlength="64" show-word-limit placeholder="请填写球局标题" />
           </el-form-item>
 
           <el-form-item label="球局描述">
