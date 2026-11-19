@@ -62,10 +62,14 @@ async def register(db: AsyncSession, payload: RegisterRequest) -> User:
     2. bcrypt 加密存储密码
     3. 初始化信誉分与信誉等级（惰性结算的起点）
     """
-    exists_stmt = select(User.id).where(
-        or_(User.student_no == payload.student_no, User.phone == payload.phone),
-        User.is_deleted == 0,
-    )
+    # ★唯一性校验：phone 为 None 时绝不能参与比较
+    #   原因：SQLAlchemy 会把 `User.phone == None` 编译成 `phone IS NULL`，
+    #   于是「任何没填手机号的存量用户」都会被误判成冲突，导致新学号注册直接 409。
+    #   因此只在客户端真正提供了手机号时才校验手机号。
+    conditions = [User.student_no == payload.student_no]
+    if payload.phone:
+        conditions.append(User.phone == payload.phone)
+    exists_stmt = select(User.id).where(or_(*conditions), User.is_deleted == 0)
     if (await db.execute(exists_stmt)).first():
         raise ConflictException("该学号或手机号已注册")
 
