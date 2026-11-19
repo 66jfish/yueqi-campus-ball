@@ -30,7 +30,7 @@ const games = ref([])
 const total = ref(0)
 
 const filters = ref({ sport_type: 0, campus: '', only_available: true, page: 1, page_size: 9 })
-const campuses = ['东校区', '西校区', '南区']
+const campuses = ['老校区', '新校区', '校外']
 
 const heroTitle = '在月球，找到你的约球搭子\n约一场不掉线的球'
 
@@ -108,7 +108,7 @@ const shownCount = computed(() => games.value.length)
     <section class="hero">
       <div class="hero__text">
         <h1 class="t-hero">{{ heroTitle }}</h1>
-        <p class="hero__sub">本周月球值日 · 白芷｜每天都有 12+ 个球局在等你</p>
+        <p class="hero__sub">本周月球值日 · 齐刘海｜在月球，找到你的约球搭子</p>
         <div class="hero__actions">
           <el-button type="primary" size="large" round @click="goCreate">
             <el-icon><Plus /></el-icon>&nbsp;立即约球

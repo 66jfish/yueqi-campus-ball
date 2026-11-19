@@ -115,7 +115,7 @@ def _signup_user(client, student_no: str, nickname: str, skill_level: int = 3) -
             "nickname": nickname,
             "password": "abc123456",
             "phone": f"136{student_no[-6:]}",
-            "campus": "东校区",
+            "campus": "老校区",
             "skill_level": skill_level,
         },
     )
@@ -134,7 +134,7 @@ def _make_game(client, headers, *, title="画像测试球局", hours=None, **ove
     payload = {
         "sport_type": 1,
         "title": title,
-        "campus": "东校区",
+        "campus": "老校区",
         "venue_name": f"画像测试场地{next(_venue_seq)}号",
         "start_time": (now + timedelta(hours=hours)).isoformat(),
         "end_time": (now + timedelta(hours=hours + 2)).isoformat(),
@@ -367,7 +367,7 @@ def test_checkin_marks_profile_dirty(client):
     host = _signup_user(client, "93000010", "签到画像发起人")
     player = _signup_user(client, "93000011", "签到画像球员")
     game = _make_game(client, host["headers"], title="签到触发画像")
-    client.post(f"/api/v1/game/{game['id']}/signup", headers=player["headers"])
+    client.post(f"/api/v1/game/{game['id']}/signup", headers=player["headers"], json={"skill_level": 3})
 
     # 签到前：先算一次画像作为基线
     before = client.get("/api/v1/ai/profile", headers=player["headers"]).json()["data"]
@@ -400,7 +400,7 @@ def test_absent_marks_dirty_and_drops_score(client):
     host = _signup_user(client, "93000020", "缺席画像发起人")
     pigeon = _signup_user(client, "93000021", "缺席画像球员")
     game = _make_game(client, host["headers"], title="缺席触发画像")
-    client.post(f"/api/v1/game/{game['id']}/signup", headers=pigeon["headers"])
+    client.post(f"/api/v1/game/{game['id']}/signup", headers=pigeon["headers"], json={"skill_level": 3})
 
     before = client.get("/api/v1/ai/profile", headers=pigeon["headers"]).json()["data"]
 
@@ -430,7 +430,7 @@ def test_exit_marks_dirty(client):
     host = _signup_user(client, "93000030", "退出画像发起人")
     quitter = _signup_user(client, "93000031", "退出画像球员")
     game = _make_game(client, host["headers"], title="退出触发画像")
-    client.post(f"/api/v1/game/{game['id']}/signup", headers=quitter["headers"])
+    client.post(f"/api/v1/game/{game['id']}/signup", headers=quitter["headers"], json={"skill_level": 3})
 
     before = client.get("/api/v1/ai/profile", headers=quitter["headers"]).json()["data"]
 
@@ -534,7 +534,7 @@ def test_user_profile_page_shows_reputation(client):
     host = _signup_user(client, "93000060", "主页发起人")
     player = _signup_user(client, "93000061", "主页球员", skill_level=4)
     game = _make_game(client, host["headers"], title="主页展示球局")
-    client.post(f"/api/v1/game/{game['id']}/signup", headers=player["headers"])
+    client.post(f"/api/v1/game/{game['id']}/signup", headers=player["headers"], json={"skill_level": 3})
     client.post(
         "/api/v1/checkin/verify",
         json={"game_id": game["id"], "user_ids": [player["user_id"]]},
@@ -598,7 +598,7 @@ def test_match_score_uses_profile_for_logged_in_user(client):
     game = _make_game(client, host["headers"], title="匹配分球局")
     # 让该用户有一场到场记录，画像更完整
     good_game = _make_game(client, host["headers"], title="匹配分历史球局")
-    client.post(f"/api/v1/game/{good_game['id']}/signup", headers=player["headers"])
+    client.post(f"/api/v1/game/{good_game['id']}/signup", headers=player["headers"], json={"skill_level": 3})
     client.post(
         "/api/v1/checkin/verify",
         json={"game_id": good_game["id"], "user_ids": [player["user_id"]]},
@@ -632,7 +632,7 @@ def test_match_score_zero_on_time_conflict(client):
         client, host2["headers"], title="冲突匹配B", hours=11,
         venue_name="冲突匹配场地B",
     )
-    client.post(f"/api/v1/game/{game_a['id']}/signup", headers=player["headers"])
+    client.post(f"/api/v1/game/{game_a['id']}/signup", headers=player["headers"], json={"skill_level": 3})
 
     body = client.get("/api/v1/game", params={"keyword": "冲突匹配B"}, headers=player["headers"]).json()
     item = body["data"]["list"][0]
@@ -688,12 +688,12 @@ def test_collect_features_counts_exit_types(client):
 
     # 提前退出（开球还有很久）
     early = _make_game(client, host["headers"], title="提前退出球局", hours=48)
-    client.post(f"/api/v1/game/{early['id']}/signup", headers=user["headers"])
+    client.post(f"/api/v1/game/{early['id']}/signup", headers=user["headers"], json={"skill_level": 3})
     client.post(f"/api/v1/game/{early['id']}/exit", headers=user["headers"])
 
     # 临近开球退出（1 小时内开球）
     late_game = _make_game(client, host["headers"], title="临期退出球局", hours=2)
-    client.post(f"/api/v1/game/{late_game['id']}/signup", headers=user["headers"])
+    client.post(f"/api/v1/game/{late_game['id']}/signup", headers=user["headers"], json={"skill_level": 3})
     _set_game(late_game["id"], start_time=datetime.now() + timedelta(minutes=30))
     client.post(f"/api/v1/game/{late_game['id']}/exit", headers=user["headers"])
 

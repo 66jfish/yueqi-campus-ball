@@ -79,7 +79,6 @@ async def register(db: AsyncSession, payload: RegisterRequest) -> User:
         college=payload.college,
         grade=payload.grade,
         gender=payload.gender,
-        skill_level=payload.skill_level,
         credit_score=settings.CREDIT_SCORE_INIT,
         credit_level=int(map_credit_level(settings.CREDIT_SCORE_INIT)),
         status=UserStatus.NORMAL,

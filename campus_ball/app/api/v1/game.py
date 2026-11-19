@@ -18,6 +18,7 @@ from fastapi import APIRouter, Query
 
 from app.api.deps import CurrentActiveUser, CurrentUser, DbSession, OptionalUser
 from app.core.config import settings
+from app.core.constants import skill_text
 from app.core.response import ApiResponse
 from app.schemas import (
     ExitGameResult,
@@ -28,6 +29,7 @@ from app.schemas import (
     GamePageOut,
     RegistrationOut,
     RosterMemberOut,
+    SignupRequest,
     SignupResult,
 )
 from app.services import checkin as checkin_service
@@ -59,7 +61,7 @@ router = APIRouter(prefix="/game", tags=["球局"])
                         "场地冲突": {
                             "value": {
                                 "code": 40900,
-                                "message": "场地冲突：东区体育馆3号场 在 11-20 19:00~21:00 已被「周五晚东区篮球局」占用，请更换场地或调整时间",
+                                "message": "场地冲突：老校区体育馆 3 号场 在 11-20 19:00~21:00 已被「周五晚东区篮球局」占用，请更换场地或调整时间",
                                 "data": None,
                             }
                         },
@@ -234,13 +236,13 @@ async def get_game_detail(game_id: int, db: DbSession, current_user: OptionalUse
         }
     },
 )
-async def sign_up(game_id: int, current_user: CurrentActiveUser, db: DbSession):
+async def sign_up(game_id: int, payload: SignupRequest, current_user: CurrentActiveUser, db: DbSession):
     """
-    报名加入球局：时间不冲突 + 未满（满员按配置进入候补或直接拒绝）。
-
+    报名加入球局：★必须提交该球类的自评水平（skill_level），否则 40000 拒绝。
+    其余校验：球局可报名 → 未截止 → 未重复 → 门槛（信誉分/水平/性别）→ 时间冲突 → 名额。
     鉴权使用 CurrentActiveUser：小黑屋封禁期间调用会被拦截（返回 code=403 与 msg）。
     """
-    result = await game_service.sign_up(db, game_id, current_user)
+    result = await game_service.sign_up(db, game_id, current_user, skill_level=payload.skill_level)
     return ApiResponse.ok(result, message=result.message)
 
 
@@ -369,6 +371,8 @@ async def list_members(game_id: int, db: DbSession, only_formal: bool = Query(Fa
                 waitlist_order=reg.waitlist_order,
                 signup_time=reg.signup_time,
                 credit_score=user.credit_score,
+                skill_level=reg.skill_level,
+                skill_level_text=skill_text(reg.skill_level),
             )
             for reg, user in pairs
         ]

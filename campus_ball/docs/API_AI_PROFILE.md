@@ -332,7 +332,7 @@ match_score = clamp(
     "user_id": 2,
     "nickname": "球场小王子",
     "avatar_url": null,
-    "campus": "东校区",
+    "campus": "老校区",
     "college": "计算机学院",
     "gender": 1,
     "skill_level": 4,

@@ -24,7 +24,14 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.config import settings
-from app.core.constants import CheckinStatus, CheckinType, GameStatus, RegistrationStatus, SettleStatus
+from app.core.constants import (
+    CheckinStatus,
+    CheckinType,
+    GameStatus,
+    RegistrationStatus,
+    SettleStatus,
+    skill_text,
+)
 from app.core.exceptions import ConflictException
 from app.models import CheckinRecord, Game, Registration, User
 from app.services import reputation as reputation_service
@@ -326,6 +333,8 @@ async def get_verify_roster(db: AsyncSession, game: Game, operator: User) -> dic
                 "nickname": item.nickname,
                 "avatar_url": item.avatar_url,
                 "credit_score": item.credit_score,
+                "skill_level": item.registration.skill_level,
+                "skill_level_text": skill_text(item.registration.skill_level),
                 "registration_status": item.registration.status,
                 "is_waitlist": item.registration.is_waitlist,
                 "checkin_status": item.checkin_status,

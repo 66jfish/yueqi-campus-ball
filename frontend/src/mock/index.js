@@ -18,7 +18,7 @@ export const mockState = {
     student_no: '20230001',
     nickname: '球场小王子',
     avatar_url: null,
-    campus: '东校区',
+    campus: '老校区',
     college: '计算机学院',
     grade: '2023',
     gender: 1,
@@ -36,12 +36,12 @@ export const mockState = {
 const LEVEL_TEXT = { 1: '黑名单', 2: '观察中', 3: '正常', 4: '优秀', 5: '金牌球友' }
 
 const SPORTS = {
-  1: { name: '篮球', cat: '乌云', color: '#9CC9E3' },
-  2: { name: '足球', cat: '芝麻', color: '#8EC5A7' },
-  3: { name: '羽毛球', cat: '白芷', color: '#8EC5A7' },
-  4: { name: '网球', cat: '豆花', color: '#DBC48E' },
-  5: { name: '排球', cat: '橘子', color: '#ECBFC7' },
-  6: { name: '乒乓球', cat: '团子', color: '#C6B6E0' }
+  1: { name: '篮球', cat: '乌头', color: '#9CC9E3' },
+  2: { name: '足球', cat: '豆花', color: '#8EC5A7' },
+  3: { name: '羽毛球', cat: '齐刘海', color: '#8EC5A7' },
+  4: { name: '网球', cat: '白芷', color: '#DBC48E' },
+  5: { name: '排球', cat: '小橘', color: '#ECBFC7' },
+  6: { name: '乒乓球', cat: '芝麻', color: '#C6B6E0' }
 }
 
 function hoursFromNow(h, m = 0) {
@@ -61,9 +61,9 @@ function buildGame(i, sport, opts = {}) {
     sport_type: sport,
     title: opts.title || `${SPORTS[sport].name} · ${opts.mode || '野球局'}`,
     description: opts.description || '水平不限，重在参与，请自备球鞋与水。',
-    campus: opts.campus || '东校区',
-    venue_name: opts.venue || '东区体育馆3号场',
-    venue_address: '东区体育馆一楼',
+    campus: opts.campus || '老校区',
+    venue_name: opts.venue || '老校区体育馆 3 号场',
+    venue_address: '老校区体育馆一层',
     start_time: opts.start || hoursFromNow(2),
     end_time: opts.end || hoursFromNow(4),
     signup_deadline: opts.deadline || hoursFromNow(1),
@@ -91,14 +91,14 @@ function buildGame(i, sport, opts = {}) {
 }
 
 const GAMES = [
-  buildGame(1, 3, { title: '羽毛球 · 双打', mode: '双打', venue: '风雨操场羽毛球场', cur: 2, max: 4, fee: 8, gender: 2, match: 96, reason: '常玩该球类、女生友好', start: hoursFromNow(1) }),
-  buildGame(2, 1, { title: '篮球 · 半场 3v3', mode: '半场3v3', venue: '东区篮球场2号', cur: 5, max: 6, skill: 3, match: 90, reason: '球技符合要求', start: hoursFromNow(3) }),
-  buildGame(3, 5, { title: '排球 · 沙滩排球', mode: '沙滩排球', venue: '南区沙排场', cur: 6, max: 8, fee: 5, match: 84, start: hoursFromNow(5) }),
-  buildGame(4, 4, { title: '网球 · 单打约练', mode: '单打', venue: '西区网球场1号', cur: 1, max: 2, fee: 12, skill: 4, match: 78, start: hoursFromNow(26) }),
-  buildGame(5, 2, { title: '足球 · 五人制', mode: '五人制', venue: '西区人工草场', cur: 8, max: 10, fee: 10, match: 86, start: hoursFromNow(28) }),
+  buildGame(1, 3, { title: '羽毛球 · 双打', mode: '双打', venue: '新校区新校区风雨操场', cur: 2, max: 4, fee: 8, gender: 2, match: 96, reason: '常玩该球类、女生友好', start: hoursFromNow(1) }),
+  buildGame(2, 1, { title: '篮球 · 半场 3v3', mode: '半场3v3', venue: '老校区篮球场2号', cur: 5, max: 6, skill: 3, match: 90, reason: '球技符合要求', start: hoursFromNow(3) }),
+  buildGame(3, 5, { title: '排球 · 沙滩排球', mode: '沙滩排球', venue: '新校区沙排场', cur: 6, max: 8, fee: 5, match: 84, start: hoursFromNow(5) }),
+  buildGame(4, 4, { title: '网球 · 单打约练', mode: '单打', venue: '新校区网球场1号', cur: 1, max: 2, fee: 12, skill: 4, match: 78, start: hoursFromNow(26) }),
+  buildGame(5, 2, { title: '足球 · 五人制', mode: '五人制', venue: '新校区人工草场', cur: 8, max: 10, fee: 10, match: 86, start: hoursFromNow(28) }),
   buildGame(6, 6, { title: '乒乓球 · 休闲对练', mode: '对练', venue: '体育馆乒乓室', cur: 2, max: 4, match: 95, start: hoursFromNow(30) }),
-  buildGame(7, 3, { title: '羽毛球 · 新手场', mode: '新手场', venue: '风雨操场羽毛球场', cur: 4, max: 4, skill: 1, match: 88, isFull: true, start: hoursFromNow(52) }),
-  buildGame(8, 1, { title: '篮球 · 全场 5v5', mode: '全场5v5', venue: '东区篮球场1号', cur: 7, max: 10, skill: 3, minCredit: 80, match: 82, start: hoursFromNow(54) })
+  buildGame(7, 3, { title: '羽毛球 · 新手场', mode: '新手场', venue: '新校区新校区风雨操场', cur: 4, max: 4, skill: 1, match: 88, isFull: true, start: hoursFromNow(52) }),
+  buildGame(8, 1, { title: '篮球 · 全场 5v5', mode: '全场5v5', venue: '老校区篮球场1号', cur: 7, max: 10, skill: 3, minCredit: 80, match: 82, start: hoursFromNow(54) })
 ]
 
 /* ------------------------------------------------------------------ 画像 */
@@ -204,10 +204,10 @@ const ROSTER = {
   not_checked_count: 3,
   waitlist_count: 1,
   members: [
-    { user_id: 2, nickname: '球场小王子', avatar_url: null, credit_score: 88, registration_status: 1, is_waitlist: 0, checkin_status: 1, checkin_status_text: '已签到', checkin_time: hoursFromNow(0), credit_delta: 2, settled: 1 },
-    { user_id: 3, nickname: '白芷的粉丝', avatar_url: null, credit_score: 102, registration_status: 1, is_waitlist: 0, checkin_status: 0, checkin_status_text: '未签到', checkin_time: null, credit_delta: 0, settled: 0 },
-    { user_id: 4, nickname: '羽毛球爱好者', avatar_url: null, credit_score: 95, registration_status: 1, is_waitlist: 0, checkin_status: 0, checkin_status_text: '未签到', checkin_time: null, credit_delta: 0, settled: 0 },
-    { user_id: 5, nickname: '迟到侠', avatar_url: null, credit_score: 76, registration_status: 1, is_waitlist: 0, checkin_status: 0, checkin_status_text: '未签到', checkin_time: null, credit_delta: 0, settled: 0 }
+    { user_id: 2, nickname: '球场小王子', avatar_url: null, credit_score: 88, skill_level: 4, skill_level_text: '高级', registration_status: 1, is_waitlist: 0, checkin_status: 1, checkin_status_text: '已签到', checkin_time: hoursFromNow(0), credit_delta: 2, settled: 1 },
+    { user_id: 3, nickname: '齐刘海的粉丝', avatar_url: null, credit_score: 102, skill_level: 3, skill_level_text: '中级', registration_status: 1, is_waitlist: 0, checkin_status: 0, checkin_status_text: '未签到', checkin_time: null, credit_delta: 0, settled: 0 },
+    { user_id: 4, nickname: '羽毛球爱好者', avatar_url: null, credit_score: 95, skill_level: 2, skill_level_text: '初级', registration_status: 1, is_waitlist: 0, checkin_status: 0, checkin_status_text: '未签到', checkin_time: null, credit_delta: 0, settled: 0 },
+    { user_id: 5, nickname: '迟到侠', avatar_url: null, credit_score: 76, skill_level: 1, skill_level_text: '新手', registration_status: 1, is_waitlist: 0, checkin_status: 0, checkin_status_text: '未签到', checkin_time: null, credit_delta: 0, settled: 0 }
   ]
 }
 
@@ -281,7 +281,7 @@ export async function mockAdapter(config) {
         user_id: Number(profilePageMatch[1]),
         nickname: isSelf ? mockState.user.nickname : '白芷的粉丝',
         avatar_url: null,
-        campus: '东校区',
+        campus: '老校区',
         college: '计算机学院',
         gender: isSelf ? 1 : 2,
         skill_level: 4,
@@ -298,6 +298,14 @@ export async function mockAdapter(config) {
         attended_count: 9,
         late_count: 1,
         absent_count: 2,
+        favorite_sports: [
+          { sport_type: 3, name: '羽毛球', count: 7, ratio: 0.58 },
+          { sport_type: 1, name: '篮球', count: 3, ratio: 0.25 },
+          { sport_type: 5, name: '排球', count: 2, ratio: 0.17 }
+        ],
+        latest_skill_level: 3,
+        latest_skill_level_text: '中级',
+        latest_skill_sport: '羽毛球',
         cancel_count: 1,
         keep_rate: 0.75,
         joined_game_count: 12,
@@ -392,7 +400,14 @@ export async function mockAdapter(config) {
       return Promise.reject(httpError(config, 403, { code: 403, msg: p.message, message: p.message, data: { banned: true, ban_end_time: p.ban_end_time, ban_duration_days: 3, ban_extend_count: 0, reason: p.reason, reason_type: 1 } }))
     }
     const g = GAMES.find((x) => x.id === Number(signupMatch[1])) || GAMES[0]
-    return ok(config, { code: 0, message: '报名成功（' + (g.current_players + 1) + '/' + g.max_players + '）', data: { registration: { id: 9, game_id: g.id, user_id: 2, status: 1, is_waitlist: 0, waitlist_order: 0, signup_time: new Date().toISOString(), credit_snapshot: 88 }, is_waitlist: false, current_players: g.current_players + 1, message: '报名成功' } })
+    const SKILL_TEXT = { 1: '新手', 2: '初级', 3: '中级', 4: '高级', 5: '大神' }
+    if (!body.skill_level) {
+      return Promise.reject(httpError(config, 400, { code: 40000, message: '请先选择你在该球类的水平（新手/初级/中级/高级/大神）后再报名', data: null }))
+    }
+    if (g.skill_level_limit && body.skill_level < g.skill_level_limit) {
+      return Promise.reject(httpError(config, 409, { code: 40900, message: `该球局最低水平要求为「${SKILL_TEXT[g.skill_level_limit]}」，您自评「${SKILL_TEXT[body.skill_level]}」，暂不达标，无法报名`, data: null }))
+    }
+    return ok(config, { code: 0, message: '报名成功（' + (g.current_players + 1) + '/' + g.max_players + '）', data: { registration: { id: 9, game_id: g.id, user_id: 2, status: 1, is_waitlist: 0, waitlist_order: 0, signup_time: new Date().toISOString(), credit_snapshot: 88, skill_level: body.skill_level, skill_level_text: SKILL_TEXT[body.skill_level] }, is_waitlist: false, current_players: g.current_players + 1, message: '报名成功' } })
   }
   const exitMatch = url.match(/\/game\/(\d+)\/exit$/)
   if (exitMatch && method === 'post') {

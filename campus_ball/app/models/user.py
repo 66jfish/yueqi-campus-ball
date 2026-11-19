@@ -47,7 +47,7 @@ class User(Base, TimestampMixin, SoftDeleteMixin):
     avatar_url: Mapped[str | None] = mapped_column(String(255), comment="头像URL")
 
     # ---------------- 校内属性 ----------------
-    campus: Mapped[str | None] = mapped_column(String(64), comment="校区，如：东校区")
+    campus: Mapped[str | None] = mapped_column(String(64), comment="校区，如：老校区")
     college: Mapped[str | None] = mapped_column(String(64), comment="学院")
     grade: Mapped[str | None] = mapped_column(String(16), comment="年级，如：2023")
     gender: Mapped[int] = mapped_column(

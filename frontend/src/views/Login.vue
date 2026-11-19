@@ -25,10 +25,10 @@ const registerForm = reactive({
   password: '',
   confirm: '',
   phone: '',
-  campus: '东校区',
+  campus: '老校区',
   college: '',
-  gender: 1,
-  skill_level: 3
+  grade: '',
+  gender: 1
 })
 
 const loginRules = {
@@ -62,8 +62,7 @@ const registerRules = {
       trigger: 'blur'
     }
   ],
-  phone: [{ pattern: /^1\d{10}$/, message: '请输入 11 位手机号', trigger: 'blur' }],
-  skill_level: [{ required: true, message: '请选择球技水平', trigger: 'change' }]
+  phone: [{ pattern: /^1\d{10}$/, message: '请输入 11 位手机号', trigger: 'blur' }]
 }
 
 const submitText = computed(() => (mode.value === 'login' ? '登录' : '注册并登录'))
@@ -138,7 +137,7 @@ function switchMode() {
             @submit.prevent="onLogin"
           >
             <el-form-item label="学号 / 手机号" prop="account">
-              <el-input v-model="loginForm.account" placeholder="如 20230001" clearable>
+              <el-input v-model="loginForm.account" placeholder="请输入学号或手机号" clearable>
                 <template #prefix><el-icon><User /></el-icon></template>
               </el-input>
             </el-form-item>
@@ -199,9 +198,9 @@ function switchMode() {
               <el-col :xs="24" :sm="12">
                 <el-form-item label="校区" prop="campus">
                   <el-select v-model="registerForm.campus" style="width: 100%">
-                    <el-option label="东校区" value="东校区" />
-                    <el-option label="西校区" value="西校区" />
-                    <el-option label="南区" value="南区" />
+                    <el-option label="老校区" value="老校区" />
+                    <el-option label="新校区" value="新校区" />
+                    <el-option label="校外" value="校外" />
                   </el-select>
                 </el-form-item>
               </el-col>
@@ -215,14 +214,8 @@ function switchMode() {
                 </el-form-item>
               </el-col>
               <el-col :xs="24" :sm="12">
-                <el-form-item label="球技水平" prop="skill_level">
-                  <el-select v-model="registerForm.skill_level" style="width: 100%">
-                    <el-option label="新手" :value="1" />
-                    <el-option label="初级" :value="2" />
-                    <el-option label="中级" :value="3" />
-                    <el-option label="高级" :value="4" />
-                    <el-option label="大神" :value="5" />
-                  </el-select>
+                <el-form-item label="年级（选填）">
+                  <el-input v-model="registerForm.grade" placeholder="如 2023" />
                 </el-form-item>
               </el-col>
             </el-row>

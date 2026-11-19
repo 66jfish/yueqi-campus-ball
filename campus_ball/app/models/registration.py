@@ -11,7 +11,7 @@ from datetime import datetime
 from sqlalchemy import BigInteger, DateTime, Index, Integer, String, text
 from sqlalchemy.orm import Mapped, mapped_column
 
-from app.core.constants import RegistrationStatus
+from app.core.constants import RegistrationStatus, SkillLevel
 from app.db.base import MYSQL_TABLE_OPTIONS, Base, TimestampMixin
 
 
@@ -66,6 +66,13 @@ class Registration(Base, TimestampMixin):
 
     credit_snapshot: Mapped[int | None] = mapped_column(
         Integer, comment="报名时的信誉分快照（AI画像/事后追责参考）"
+    )
+    skill_level: Mapped[int] = mapped_column(
+        Integer,
+        nullable=False,
+        default=SkillLevel.NEWBIE,
+        server_default=text("1"),
+        comment="报名时自评的该球类水平（必填）：1-新手 2-初级 3-中级 4-高级 5-大神",
     )
 
     def __repr__(self) -> str:  # pragma: no cover - 调试用

@@ -185,6 +185,33 @@ CREDIT_RULES: dict[int, int] = {
     CheckinStatus.NOT_CHECKED: 0,  # 未结算态，变动为 0
 }
 
+# ==================================================================
+# 校区选项（全站统一为三个：老校区 / 新校区 / 校外）
+#   选「校外」时场地为自由输入（球馆名或地址）
+# ==================================================================
+CAMPUS_LAO = "老校区"
+CAMPUS_XIN = "新校区"
+CAMPUS_OFF = "校外"
+CAMPUS_OPTIONS: tuple[str, ...] = (CAMPUS_LAO, CAMPUS_XIN, CAMPUS_OFF)
+# 校外场地：不校验是否在校内场馆列表中，由用户自填
+CAMPUS_FREE_VENUE = CAMPUS_OFF
+
+# 球技水平文案（1-5 与 SkillLevel 对应）
+SKILL_LEVEL_TEXT: dict[int, str] = {
+    0: "不限",
+    1: "新手",
+    2: "初级",
+    3: "中级",
+    4: "高级",
+    5: "大神",
+}
+
+
+def skill_text(level: int | None) -> str:
+    """水平数值 → 文案（用于接口返回，前端直接展示）"""
+    return SKILL_LEVEL_TEXT.get(int(level or 0), "未知")
+
+
 # 信誉分 -> 信誉等级 的映射阈值（从高到低匹配）
 # 注意：区间必须让「初始分 100」落在 NORMAL(3)，与数据库默认值 credit_level=3 保持一致，
 #      否则新用户会出现「库里是 3、结算后变 4」的跳变。

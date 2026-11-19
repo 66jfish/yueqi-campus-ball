@@ -97,7 +97,7 @@ def _register(client, **overrides):
         "nickname": "球场小王子",
         "password": "abc123456",
         "phone": "13800000001",
-        "campus": "东校区",
+        "campus": "老校区",
         "skill_level": 3,
     }
     payload.update(overrides)
@@ -443,7 +443,7 @@ def _game_payload_for_ban_test() -> dict:
         "sport_type": 1,
         "title": "封禁期间试着发局",
         "venue_name": "封禁测试场地",
-        "campus": "东校区",
+        "campus": "老校区",
         "start_time": (now + timedelta(hours=2)).isoformat(),
         "end_time": (now + timedelta(hours=3)).isoformat(),
         "max_players": 4,

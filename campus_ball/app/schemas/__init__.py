@@ -40,6 +40,7 @@ from app.schemas.game import (
     GamePageOut,
     RegistrationOut,
     RosterMemberOut,
+    SignupRequest,
     SignupResult,
 )
 from app.schemas.user import (
@@ -60,7 +61,7 @@ __all__ = [
     "UserProfilePageOut",
     # game
     "GameCreateRequest", "GameOut", "GameListItem", "GameDetailOut", "GamePageOut",
-    "RegistrationOut", "SignupResult", "ExitGameResult", "RosterMemberOut",
+    "RegistrationOut", "SignupResult", "SignupRequest", "ExitGameResult", "RosterMemberOut",
     # checkin
     "CheckinRequest", "LeaveRequest", "CheckinSettleOut",
     "AbsentJudgementRequest", "AbsentJudgementOut", "CheckinRecordOut",

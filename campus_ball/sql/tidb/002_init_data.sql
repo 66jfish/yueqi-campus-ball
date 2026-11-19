@@ -17,20 +17,20 @@ INSERT INTO `t_user` (`id`, `student_no`, `nickname`, `real_name`, `password_has
                       `credit_score`, `credit_level`, `total_game_count`, `absent_count`, `skill_level`)
 VALUES (1, '20230001', '球场小王子', '张三',
         '$2b$12$QmH/vbFcHZbAE9F4xmiDE.9GN2K6faj/e7e5FDjMWC1./lhrn4Eau',
-        '13800000001', '东校区', '计算机学院', '2023', 1, 100, 3, 0, 0, 3),
+        '13800000001', '老校区', '计算机学院', '2023', 1, 100, 3, 0, 0, 3),
        (2, '20230002', '羽毛球爱好者', '李四',
         '$2b$12$QmH/vbFcHZbAE9F4xmiDE.9GN2K6faj/e7e5FDjMWC1./lhrn4Eau',
-        '13800000002', '东校区', '外国语学院', '2023', 2, 92, 3, 1, 1, 2),
+        '13800000002', '老校区', '外国语学院', '2023', 2, 92, 3, 1, 1, 2),
        (3, '20230003', '鸽王本王', '王五',
         '$2b$12$QmH/vbFcHZbAE9F4xmiDE.9GN2K6faj/e7e5FDjMWC1./lhrn4Eau',
-        '13800000003', '西校区', '体育学院', '2022', 1, 55, 1, 2, 3, 4);
+        '13800000003', '新校区', '体育学院', '2022', 1, 55, 1, 2, 3, 4);
 INSERT INTO `t_game` (`id`, `creator_id`, `sport_type`, `title`, `description`, `campus`, `venue_name`,
                       `start_time`, `end_time`, `signup_deadline`, `checkin_start_time`, `checkin_end_time`,
                       `max_players`, `min_players`, `current_players`, `fee_type`, `status`, `settle_status`)
-VALUES (101, 1, 1, '周五晚东区篮球局', '水平不限，重在参与，请自备球鞋', '东校区', '东区体育馆3号场',
+VALUES (101, 1, 1, '周五晚东区篮球局', '水平不限，重在参与，请自备球鞋', '老校区', '老校区体育馆 3 号场',
         '2026-11-20 19:00:00', '2026-11-20 21:00:00', '2026-11-20 17:00:00',
         '2026-11-20 18:30:00', '2026-11-20 19:15:00', 10, 4, 2, 0, 1, 0),
-       (102, 2, 3, '羽毛球双打（已结束）', '已结束，等待缺席判定', '东校区', '风雨操场羽毛球场',
+       (102, 2, 3, '羽毛球双打（已结束）', '已结束，等待缺席判定', '老校区', '新校区新校区风雨操场',
         '2026-11-14 15:00:00', '2026-11-14 17:00:00', '2026-11-14 12:00:00',
         '2026-11-14 14:30:00', '2026-11-14 15:15:00', 4, 2, 3, 1, 4, 0);
 INSERT INTO `t_registration` (`game_id`, `user_id`, `status`, `is_waitlist`, `waitlist_order`, `credit_snapshot`)

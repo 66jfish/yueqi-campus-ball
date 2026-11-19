@@ -26,7 +26,7 @@ const AUTH_STATE = {
     id: 2,
     student_no: '20230001',
     nickname: '球场小王子',
-    campus: '东校区',
+    campus: '老校区',
     college: '计算机学院',
     skill_level: 4,
     reputation_score: 88,

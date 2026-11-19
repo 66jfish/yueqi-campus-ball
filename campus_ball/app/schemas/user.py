@@ -68,6 +68,14 @@ class UserProfilePageOut(BaseModel):
     profile_degraded: bool = Field(True, description="是否本地加权规则版（未使用大模型）")
     breakdown: list[dict] = Field(default_factory=list, description="画像加权明细（分数怎么来的）")
 
+    # ---- 常打项目 & 最近自评水平 ----
+    favorite_sports: list[dict] = Field(
+        default_factory=list, description="常打项目（按参与次数倒序）：[{sport_type, name, count, ratio}]"
+    )
+    latest_skill_level: int | None = Field(None, description="最近一次报名自评的水平（该球类）")
+    latest_skill_level_text: str | None = Field(None, description="最近自评水平文案")
+    latest_skill_sport: str | None = Field(None, description="最近自评水平对应的球类")
+
     # ---- 行为统计 ----
     attended_count: int = Field(0, description="累计到场（正常签到）次数")
     late_count: int = Field(0, description="累计迟到次数")

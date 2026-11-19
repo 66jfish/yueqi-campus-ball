@@ -23,7 +23,7 @@ class RegisterRequest(BaseModel):
                     "password": "abc123456",
                     "real_name": "张三",
                     "phone": "13800000001",
-                    "campus": "东校区",
+                    "campus": "老校区",
                     "college": "计算机学院",
                     "grade": "2023",
                     "gender": 1,
@@ -42,7 +42,7 @@ class RegisterRequest(BaseModel):
     college: str | None = Field(None, max_length=64, description="学院")
     grade: str | None = Field(None, max_length=16, description="年级")
     gender: int = Field(0, ge=0, le=2, description="性别：0-未知 1-男 2-女")
-    skill_level: int = Field(1, ge=1, le=5, description="球技水平：1-新手 2-初级 3-中级 4-高级 5-大神")
+    # 注：球技水平不在注册时采集，改为「报名某球局时按该球类自评」（见 SignupRequest）
 
 
 class LoginRequest(BaseModel):

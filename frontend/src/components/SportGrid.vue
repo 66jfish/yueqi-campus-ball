@@ -14,12 +14,12 @@ const props = defineProps({
 const emit = defineEmits(['update:modelValue'])
 
 const SPORTS = [
-  { type: 3, name: '羽毛球', cat: '白芷', tint: '#E4F2EA' },
-  { type: 5, name: '排球', cat: '橘子', tint: '#FBEAEE' },
-  { type: 4, name: '网球', cat: '豆花', tint: '#F6EFDC' },
-  { type: 1, name: '篮球', cat: '乌云', tint: '#E6F2F8' },
-  { type: 2, name: '足球', cat: '芝麻', tint: '#EAF3EE' },
-  { type: 6, name: '乒乓球', cat: '团子', tint: '#F0EBF8' }
+  { type: 3, name: '羽毛球', cat: '齐刘海', tint: '#E4F2EA' },
+  { type: 5, name: '排球', cat: '小橘', tint: '#FBEAEE' },
+  { type: 4, name: '网球', cat: '白芷', tint: '#F6EFDC' },
+  { type: 1, name: '篮球', cat: '乌头', tint: '#E6F2F8' },
+  { type: 2, name: '足球', cat: '豆花', tint: '#EAF3EE' },
+  { type: 6, name: '乒乓球', cat: '芝麻', tint: '#F0EBF8' }
 ]
 
 /** 每个球类当前进行中的局数（来自列表接口的真实数据） */

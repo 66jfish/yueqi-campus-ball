@@ -12,7 +12,9 @@
 from fastapi import APIRouter
 
 from app.api.deps import CurrentUser, DbSession, OptionalUser
-from app.core.constants import CreditLevel
+from app.core.constants import CreditLevel, RegistrationStatus, skill_text
+from app.models import Game, Registration
+from sqlalchemy import select
 from app.core.exceptions import NotFoundException
 from app.core.response import ApiResponse
 from app.schemas import (
@@ -28,6 +30,9 @@ from app.services import reputation as reputation_service
 from app.services import user as user_service
 
 router = APIRouter(prefix="/user", tags=["用户"])
+
+# 球类文案（常打项目展示用）
+SPORT_NAME = {1: "篮球", 2: "足球", 3: "羽毛球", 4: "网球", 5: "排球", 6: "乒乓球"}
 
 # 信誉等级文案（个人主页展示用）
 _LEVEL_TEXT = {
@@ -79,6 +84,32 @@ async def get_user_profile_page(user_id: int, db: DbSession, current_user: Optio
     profile = user.ai_profile if isinstance(user.ai_profile, dict) else {}
     ban = await blacklist_service.get_active_ban(db, user_id)
 
+    # 常打项目：按参与次数倒序（来自行为特征里的球类分布）
+    sport_counts = dict(features.sport_counts) if features else {}
+    total_sport = sum(sport_counts.values()) or 1
+    favorite_sports = [
+        {
+            "sport_type": st,
+            "name": SPORT_NAME.get(st, "其他"),
+            "count": cnt,
+            "ratio": round(cnt / total_sport, 2),
+        }
+        for st, cnt in sorted(sport_counts.items(), key=lambda x: -x[1])[:4]
+    ]
+
+    # 最近一次报名时自评的水平（含球类）
+    latest_reg = (
+        await db.execute(
+            select(Registration, Game.sport_type)
+            .join(Game, Game.id == Registration.game_id)
+            .where(Registration.user_id == user_id, Registration.status == RegistrationStatus.SIGNED)
+            .order_by(Registration.signup_time.desc())
+            .limit(1)
+        )
+    ).first()
+    latest_skill_level = latest_reg[0].skill_level if latest_reg else None
+    latest_skill_sport = SPORT_NAME.get(latest_reg[1], None) if latest_reg else None
+
     return ApiResponse.ok(
         UserProfilePageOut(
             user_id=user.id,
@@ -98,6 +129,10 @@ async def get_user_profile_page(user_id: int, db: DbSession, current_user: Optio
             profile_source=user.ai_profile_source or profile.get("source"),
             profile_degraded=bool(profile.get("degraded", True)),
             breakdown=list(profile.get("breakdown") or rule["breakdown"]),
+            favorite_sports=favorite_sports,
+            latest_skill_level=latest_skill_level,
+            latest_skill_level_text=skill_text(latest_skill_level) if latest_skill_level else None,
+            latest_skill_sport=latest_skill_sport,
             attended_count=features.checked_count if features else 0,
             late_count=features.late_count if features else 0,
             absent_count=user.absent_count,

@@ -101,7 +101,7 @@ def _signup_user(client, student_no: str, nickname: str) -> dict:
             "nickname": nickname,
             "password": "abc123456",
             "phone": f"139{student_no[-6:]}",
-            "campus": "东校区",
+            "campus": "老校区",
         },
     )
     body = client.post("/api/v1/auth/login", json={"account": student_no, "password": "abc123456"}).json()
@@ -124,7 +124,7 @@ def _make_game(client, headers, *, title="惩罚测试球局", hours: int | None
     payload = {
         "sport_type": 1,
         "title": title,
-        "campus": "东校区",
+        "campus": "老校区",
         "venue_name": f"惩罚测试场地{next(_venue_seq)}号",
         "start_time": (now + timedelta(hours=hours)).isoformat(),
         "end_time": (now + timedelta(hours=hours + 2)).isoformat(),
@@ -141,7 +141,7 @@ def _make_game(client, headers, *, title="惩罚测试球局", hours: int | None
 
 def _join(client, headers, game_id: int) -> dict:
     """报名球局，直接返回响应 JSON"""
-    return client.post(f"/api/v1/game/{game_id}/signup", headers=headers).json()
+    return client.post(f"/api/v1/game/{game_id}/signup", headers=headers, json={"skill_level": 3}).json()
 
 
 def _ban_directly(user_id: int, *, reason: str = "缺席球局（未签到且未请假），球局ID=900", days: int = 3):
@@ -424,7 +424,7 @@ def test_ban_blocks_game_create_and_signup_only(client):
 
     # ---------- 2) 报名被拦 ----------
     another = _make_game(client, host["headers"], title="封禁期间想报名")
-    resp = client.post(f"/api/v1/game/{another['id']}/signup", headers=banned["headers"])
+    resp = client.post(f"/api/v1/game/{another['id']}/signup", headers=banned["headers"], json={"skill_level": 3})
     assert resp.status_code == 403
     assert resp.json()["code"] == 403
     assert "您因放鸽子被禁赛" in resp.json()["msg"]

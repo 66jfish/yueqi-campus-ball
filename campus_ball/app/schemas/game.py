@@ -11,7 +11,7 @@ from decimal import Decimal
 
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
-from app.core.constants import MATCH_SCORE_PLACEHOLDER
+from app.core.constants import CAMPUS_FREE_VENUE, CAMPUS_OPTIONS, MATCH_SCORE_PLACEHOLDER, skill_text
 
 
 class GameCreateRequest(BaseModel):
@@ -24,9 +24,9 @@ class GameCreateRequest(BaseModel):
                     "sport_type": 1,
                     "title": "周五晚东区篮球局",
                     "description": "水平不限，重在参与，请自备球鞋",
-                    "campus": "东校区",
-                    "venue_name": "东区体育馆3号场",
-                    "venue_address": "东区体育馆一楼",
+                    "campus": "老校区",
+                    "venue_name": "老校区体育馆 3 号场",
+                    "venue_address": "老校区体育馆一层",
                     "start_time": "2026-11-20T19:00:00",
                     "end_time": "2026-11-20T21:00:00",
                     "signup_deadline": "2026-11-20T17:00:00",
@@ -66,7 +66,11 @@ class GameCreateRequest(BaseModel):
 
     @model_validator(mode="after")
     def check_time_range(self) -> "GameCreateRequest":
-        """时间合法性：结束晚于开始；核销窗口在合理范围内"""
+        """时间与校区合法性校验"""
+        if self.campus and self.campus not in CAMPUS_OPTIONS:
+            raise ValueError(f"校区只能是：{'、'.join(CAMPUS_OPTIONS)}")
+        if self.campus == CAMPUS_FREE_VENUE and not (self.venue_name or "").strip():
+            raise ValueError("选择「校外」时必须填写球馆名或地址")
         if self.end_time <= self.start_time:
             raise ValueError("结束时间必须晚于开球时间")
         if self.signup_deadline and self.signup_deadline > self.start_time:
@@ -166,6 +170,19 @@ class GamePageOut(BaseModel):
     pages: int = Field(0, description="总页数")
 
 
+class SignupRequest(BaseModel):
+    """报名请求：★必须填写该球类的自评水平"""
+
+    model_config = ConfigDict(json_schema_extra={"examples": [{"skill_level": 3}]})
+
+    skill_level: int = Field(
+        ...,
+        ge=1,
+        le=5,
+        description="★该球类自评水平（必填）：1-新手 2-初级 3-中级 4-高级 5-大神",
+    )
+
+
 class RegistrationOut(BaseModel):
     """报名记录输出"""
 
@@ -179,6 +196,8 @@ class RegistrationOut(BaseModel):
     waitlist_order: int = Field(0, description="候补顺序号")
     signup_time: datetime | None = None
     credit_snapshot: int | None = None
+    skill_level: int = Field(1, description="报名时自评水平：1-新手 … 5-大神")
+    skill_level_text: str | None = Field(None, description="水平文案")
 
 
 class SignupResult(BaseModel):
@@ -188,6 +207,11 @@ class SignupResult(BaseModel):
     is_waitlist: bool = Field(False, description="是否进入候补队列")
     current_players: int = Field(0, description="当前正式报名人数")
     message: str = Field("报名成功", description="提示信息，可直接展示")
+
+    @model_validator(mode="after")
+    def fill_skill_text(self) -> "SignupResult":
+        self.registration.skill_level_text = skill_text(self.registration.skill_level)
+        return self
 
 
 class ExitGameResult(BaseModel):
@@ -200,7 +224,7 @@ class ExitGameResult(BaseModel):
 
 
 class RosterMemberOut(BaseModel):
-    """报名名单成员"""
+    """报名名单成员（发起人视角：显示报名者水平 + 信誉分）"""
 
     user_id: int
     nickname: str | None = None
@@ -209,4 +233,6 @@ class RosterMemberOut(BaseModel):
     is_waitlist: int = 0
     waitlist_order: int = 0
     signup_time: datetime | None = None
-    credit_score: int | None = None
+    credit_score: int | None = Field(None, description="信誉分")
+    skill_level: int = Field(1, description="报名时自评水平：1-新手 … 5-大神")
+    skill_level_text: str | None = Field(None, description="水平文案")

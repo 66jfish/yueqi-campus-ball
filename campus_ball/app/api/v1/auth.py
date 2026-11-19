@@ -52,7 +52,7 @@ router = APIRouter(prefix="/auth", tags=["认证"])
                             "student_no": "20230001",
                             "nickname": "球场小王子",
                             "avatar_url": None,
-                            "campus": "东校区",
+                            "campus": "老校区",
                             "college": "计算机学院",
                             "gender": 1,
                             "skill_level": 3,

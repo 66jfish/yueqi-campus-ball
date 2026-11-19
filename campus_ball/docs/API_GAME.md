@@ -106,9 +106,9 @@
   "sport_type": 1,
   "title": "周五晚东区篮球局",
   "description": "水平不限，重在参与，请自备球鞋",
-  "campus": "东校区",
-  "venue_name": "东区体育馆3号场",
-  "venue_address": "东区体育馆一楼",
+  "campus": "老校区",
+  "venue_name": "老校区体育馆 3 号场",
+  "venue_address": "老校区体育馆一层",
   "start_time": "2026-11-20T19:00:00",
   "end_time": "2026-11-20T21:00:00",
   "signup_deadline": "2026-11-20T17:00:00",
@@ -129,8 +129,8 @@
     "creator_id": 1,
     "sport_type": 1,
     "title": "周五晚东区篮球局",
-    "campus": "东校区",
-    "venue_name": "东区体育馆3号场",
+    "campus": "老校区",
+    "venue_name": "老校区体育馆 3 号场",
     "start_time": "2026-11-20T19:00:00",
     "end_time": "2026-11-20T21:00:00",
     "checkin_start_time": "2026-11-20T18:30:00",
@@ -156,7 +156,7 @@
 // 409 场地冲突（同场地同时段已被占用）
 {
   "code": 40900,
-  "message": "场地冲突：东区体育馆3号场 在 11-20 19:00~21:00 已被「周五晚东区篮球局」占用，请更换场地或调整时间",
+  "message": "场地冲突：老校区体育馆 3 号场 在 11-20 19:00~21:00 已被「周五晚东区篮球局」占用，请更换场地或调整时间",
   "data": null
 }
 
@@ -218,8 +218,8 @@ GET /api/v1/game?sport_type=2&only_available=true
         "creator_nickname": "球场小王子",
         "sport_type": 1,
         "title": "周五晚东区篮球局",
-        "campus": "东校区",
-        "venue_name": "东区体育馆3号场",
+        "campus": "老校区",
+        "venue_name": "老校区体育馆 3 号场",
         "start_time": "2026-11-20T19:00:00",
         "end_time": "2026-11-20T21:00:00",
         "max_players": 10,
@@ -270,9 +270,9 @@ GET /api/v1/game?sport_type=2&only_available=true
     "creator_nickname": "球场小王子",
     "creator_credit_score": 100,
     "sport_type": 1,
-    "campus": "东校区",
-    "venue_name": "东区体育馆3号场",
-    "venue_address": "东区体育馆一楼",
+    "campus": "老校区",
+    "venue_name": "老校区体育馆 3 号场",
+    "venue_address": "老校区体育馆一层",
     "start_time": "2026-11-20T19:00:00",
     "end_time": "2026-11-20T21:00:00",
     "checkin_start_time": "2026-11-20T18:30:00",
@@ -584,7 +584,7 @@ TOKEN=$(curl -s -X POST http://127.0.0.1:8000/api/v1/auth/login \
 # 2) 发起球局
 curl -X POST http://127.0.0.1:8000/api/v1/game -H "Authorization: Bearer $TOKEN" \
   -H "Content-Type: application/json" \
-  -d '{"sport_type":1,"title":"周五晚东区篮球局","campus":"东校区","venue_name":"东区体育馆3号场",
+  -d '{"sport_type":1,"title":"周五晚东区篮球局","campus":"老校区","venue_name":"老校区体育馆 3 号场",
        "start_time":"2026-11-20T19:00:00","end_time":"2026-11-20T21:00:00","max_players":10}'
 
 # 3) 列表：不传 sport_type 返回全部；只看足球

@@ -153,6 +153,7 @@ onMounted(load)
           <el-checkbox :value="m.user_id" :disabled="[1, 2, 4].includes(m.checkin_status)" />
           <span class="verify__avatar"><CatIcon :size="22" color="#69625A" /></span>
           <span class="verify__name">{{ m.nickname }}</span>
+          <span class="pill pill--ghost">{{ m.skill_level_text || '未填写水平' }}</span>
           <span class="t-caption">信誉 {{ m.credit_score }}</span>
           <span class="pill" :class="STATUS_STYLE[m.checkin_status ?? 0].cls">
             {{ m.checkin_status_text }}

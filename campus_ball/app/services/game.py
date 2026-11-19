@@ -46,6 +46,7 @@ from app.core.constants import (
 )
 from app.core.exceptions import ConflictException, ForbiddenException, NotFoundException, ParamException
 from app.models import CheckinRecord, Game, Registration, User
+from app.core.constants import skill_text
 from app.schemas import GameCreateRequest, SignupResult
 from app.services import ai_profile as ai_profile_service
 
@@ -565,12 +566,18 @@ async def get_game_row(db: AsyncSession, game: Game, current_user_id: int | None
 # ==================================================================
 # 4. 报名加入球局
 # ==================================================================
-async def sign_up(db: AsyncSession, game_id: int, user: User) -> SignupResult:
+async def sign_up(
+    db: AsyncSession, game_id: int, user: User, skill_level: int | None = None
+) -> SignupResult:
     """
     报名加入球局。
     校验顺序（异常提示按此顺序给出，前端可直接展示）：
-        球局可报名 → 未截止 → 未重复报名 → 门槛 → ★时间冲突 → ★名额
+        ★水平必填 → 球局可报名 → 未截止 → 未重复报名 → 门槛（信誉分/球技/性别）
+        → ★时间冲突 → ★名额
+    :param skill_level: ★该球类自评水平（1-5，必填）
     """
+    if skill_level is None:
+        raise ParamException("请先选择你在该球类的水平（新手/初级/中级/高级/大神）后再报名")
     game = await get_game(db, game_id)
     now = datetime.now()
 
@@ -604,9 +611,11 @@ async def sign_up(db: AsyncSession, game_id: int, user: User) -> SignupResult:
         raise ConflictException(
             f"该球局要求信誉分不低于 {game.min_credit_score}，您当前 {user.credit_score} 分，暂无法报名"
         )
-    if game.skill_level_limit and user.skill_level < game.skill_level_limit:
+    # ★按「报名时自评的水平」校验球局门槛（不再依赖注册时的水平）
+    if game.skill_level_limit and int(skill_level) < game.skill_level_limit:
         raise ConflictException(
-            f"该球局要求球技水平不低于 {game.skill_level_limit} 级，您当前 {user.skill_level} 级"
+            f"该球局最低水平要求为「{skill_text(game.skill_level_limit)}」，"
+            f"您自评「{skill_text(skill_level)}」，暂不达标，无法报名"
         )
     if game.gender_limit and user.gender != game.gender_limit:
         limit_text = "仅限男生" if game.gender_limit == 1 else "仅限女生"
@@ -658,6 +667,7 @@ async def sign_up(db: AsyncSession, game_id: int, user: User) -> SignupResult:
     existing.cancel_time = None
     existing.cancel_reason = None
     existing.credit_snapshot = user.credit_score
+    existing.skill_level = int(skill_level)  # ★记录本次报名自评的水平
 
     if not is_waitlist:
         existing.waitlist_order = 0

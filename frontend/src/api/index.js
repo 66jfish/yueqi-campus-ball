@@ -27,7 +27,8 @@ export const gameApi = {
   create: (data) => request.post('/game', data),
   list: (params) => request.get('/game', { params }),
   detail: (id) => request.get(`/game/${id}`),
-  signup: (id) => request.post(`/game/${id}/signup`),
+  /** 报名：★必须带该球类自评水平 */
+  signup: (id, skillLevel) => request.post(`/game/${id}/signup`, { skill_level: skillLevel }),
   exit: (id, reason) => request.post(`/game/${id}/exit`, null, { params: reason ? { reason } : {} }),
   finish: (id) => request.post(`/game/${id}/finish`),
   members: (id, onlyFormal = false) => request.get(`/game/${id}/members`, { params: { only_formal: onlyFormal } })

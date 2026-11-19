@@ -206,6 +206,22 @@ onMounted(load)
         </el-col>
 
         <el-col :xs="24" :md="9">
+          <!-- 常打项目 & 最近自评水平 -->
+          <div v-if="page.favorite_sports?.length || page.latest_skill_level" class="card sports">
+            <h3 class="t-card-title">常打项目</h3>
+            <div class="sports__list">
+              <span v-for="s in page.favorite_sports" :key="s.sport_type" class="pill pill--ghost">
+                {{ s.name }} · {{ s.count }} 次（{{ Math.round((s.ratio || 0) * 100) }}%）
+              </span>
+              <span v-if="!page.favorite_sports?.length" class="t-caption">暂无参与记录</span>
+            </div>
+            <p v-if="page.latest_skill_level" class="sports__skill">
+              最近自评水平：<b>{{ page.latest_skill_level_text }}</b>
+              <span v-if="page.latest_skill_sport" class="t-caption">（{{ page.latest_skill_sport }}）</span>
+            </p>
+            <p v-else class="t-caption sports__skill">报名球局时会采集你的自评水平，填一次就会显示在这里。</p>
+          </div>
+
           <!-- 行为统计 -->
           <div class="card stats">
             <h3 class="t-card-title">参与记录</h3>
@@ -397,6 +413,21 @@ onMounted(load)
   margin: 0;
   font-size: 13px;
   color: var(--c-text);
+}
+
+/* 常打项目 */
+.sports {
+  margin-bottom: var(--sp-4);
+}
+.sports__list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+}
+.sports__skill {
+  margin: 10px 0 0;
+  font-size: 13px;
 }
 
 /* 统计 */

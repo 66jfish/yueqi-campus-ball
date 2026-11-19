@@ -66,7 +66,7 @@ def main() -> int:
             r = c.post(
                 "/auth/register",
                 json={"student_no": no, "nickname": nick, "password": "e2e123456",
-                      "phone": phone, "campus": "东校区", "skill_level": 3},
+                      "phone": phone, "campus": "老校区", "skill_level": 3},
             ).json()
             check(f"注册 {nick}", r.get("code") == 0, str(r))
 
@@ -88,7 +88,7 @@ def main() -> int:
         start = time.strftime("%Y-%m-%dT%H:%M:%S", time.localtime(now + 3600))
         end = time.strftime("%Y-%m-%dT%H:%M:%S", time.localtime(now + 3 * 3600))
         payload = {
-            "sport_type": 3, "title": f"E2E羽毛球双打-{suffix}", "campus": "东校区",
+            "sport_type": 3, "title": f"E2E羽毛球双打-{suffix}", "campus": "老校区",
             "venue_name": f"E2E场地-{suffix}", "start_time": start, "end_time": end,
             "max_players": 4, "min_players": 2,
         }

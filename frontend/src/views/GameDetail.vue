@@ -58,18 +58,39 @@ async function load() {
   }
 }
 
-async function join() {
+/** 报名前必须先选水平（必填），不选不能报名 */
+const joinDialog = ref(false)
+const joinSkill = ref(null)
+const SKILLS = [
+  { value: 1, label: '新手' },
+  { value: 2, label: '初级' },
+  { value: 3, label: '中级' },
+  { value: 4, label: '高级' },
+  { value: 5, label: '大神' }
+]
+
+function join() {
   if (!store.isLoggedIn) {
     router.push({ name: 'login', query: { redirect: route.fullPath } })
     return
   }
+  joinSkill.value = null
+  joinDialog.value = true
+}
+
+async function confirmJoin() {
+  if (!joinSkill.value) {
+    ElMessage.warning('请选择你在该球类的水平后再报名')
+    return
+  }
   acting.value = true
   try {
-    const res = await gameApi.signup(gameId)
+    const res = await gameApi.signup(gameId, joinSkill.value)
     ElMessage.success(res.message || '报名成功')
+    joinDialog.value = false
     await load()
   } catch (e) {
-    /* 统一提示 */
+    /* 统一提示（水平不达门槛会返回具体提示） */
   } finally {
     acting.value = false
   }
@@ -219,6 +240,7 @@ onMounted(() => {
               <li v-for="m in members" :key="m.user_id">
                 <span class="side__avatar"><CatIcon :size="20" color="#69625A" /></span>
                 <span class="side__member-name">{{ m.nickname }}</span>
+                <span class="pill pill--ghost">{{ m.skill_level_text || '未填写水平' }}</span>
                 <span class="t-caption">信誉 {{ m.credit_score }}</span>
                 <span v-if="m.is_waitlist" class="pill pill--ghost">候补</span>
               </li>
@@ -230,6 +252,20 @@ onMounted(() => {
     </template>
 
     <el-empty v-else description="球局不存在或已删除" />
+
+    <!-- 报名弹窗：★该球类水平必填 -->
+    <el-dialog v-model="joinDialog" title="报名前，先说说你的水平" width="min(420px, 92vw)">
+      <p class="t-body" style="margin-top: 0">
+        请选择你在 {{ game?.title }} 对应球类的自评水平（必填），组织者按此评估阵容强度。
+      </p>
+      <el-radio-group v-model="joinSkill" class="join-skill">
+        <el-radio-button v-for="s in SKILLS" :key="s.value" :value="s.value">{{ s.label }}</el-radio-button>
+      </el-radio-group>
+      <template #footer>
+        <el-button round @click="joinDialog = false">取消</el-button>
+        <el-button type="primary" round :loading="acting" @click="confirmJoin">确认报名</el-button>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
@@ -307,6 +343,11 @@ onMounted(() => {
   gap: 10px;
   flex-wrap: wrap;
   margin-top: var(--sp-3);
+}
+.join-skill {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
 }
 .detail__reason {
   margin: var(--sp-3) 0 0;

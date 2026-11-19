@@ -20,12 +20,12 @@ const props = defineProps({
 const emit = defineEmits(['join', 'open'])
 
 const SPORT = {
-  1: { name: '篮球', cat: '乌云' },
-  2: { name: '足球', cat: '芝麻' },
-  3: { name: '羽毛球', cat: '白芷' },
-  4: { name: '网球', cat: '豆花' },
-  5: { name: '排球', cat: '橘子' },
-  6: { name: '乒乓球', cat: '团子' }
+  1: { name: '篮球', cat: '乌头' },
+  2: { name: '足球', cat: '豆花' },
+  3: { name: '羽毛球', cat: '齐刘海' },
+  4: { name: '网球', cat: '白芷' },
+  5: { name: '排球', cat: '小橘' },
+  6: { name: '乒乓球', cat: '芝麻' }
 }
 
 const sport = computed(() => SPORT[props.game.sport_type] || { name: '运动', cat: '月球' })

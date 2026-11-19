@@ -100,7 +100,7 @@ _venue_seq = itertools.count(1)
 
 
 def _unique_venue() -> str:
-    return f"东区体育馆{next(_venue_seq)}号场"
+    return f"老校区体育馆{next(_venue_seq)}号场"
 
 
 def _signup_user(client, student_no: str, nickname: str, credit: int | None = None) -> dict:
@@ -112,7 +112,7 @@ def _signup_user(client, student_no: str, nickname: str, credit: int | None = No
             "nickname": nickname,
             "password": "abc123456",
             "phone": f"138{student_no[-6:]}",
-            "campus": "东校区",
+            "campus": "老校区",
             "skill_level": 3,
         },
     )
@@ -134,7 +134,7 @@ def _game_payload(**overrides) -> dict:
         "sport_type": 1,
         "title": "周五晚东区篮球局",
         "description": "水平不限",
-        "campus": "东校区",
+        "campus": "老校区",
         "venue_name": _unique_venue(),
         "start_time": (now + timedelta(hours=1)).isoformat(),
         "end_time": (now + timedelta(hours=3)).isoformat(),
@@ -335,7 +335,7 @@ def test_create_game_creator_time_conflict(client):
     host2 = _signup_user(client, "31000009", "发起人B")
 
     game = _create_game(client, host["headers"], title="主赛")
-    assert client.post(f"/api/v1/game/{game['id']}/signup", headers=host2["headers"]).json()["code"] == 0
+    assert client.post(f"/api/v1/game/{game['id']}/signup", headers=host2["headers"], json={"skill_level": 3}).json()["code"] == 0
 
     now = datetime.now()
     body = _create_game(client, host2["headers"], expect_ok=False, title="冲突发起",
@@ -418,16 +418,16 @@ def test_list_games_filters_and_pagination(client):
                  checkin_start_time=(now + timedelta(hours=4)).isoformat(),
                  checkin_end_time=(now + timedelta(hours=6)).isoformat())
     _create_game(client, host["headers"], title="分页测试-羽毛球C", venue_name="分页-场地C", sport_type=3,
-                 campus="西校区",
+                 campus="新校区",
                  start_time=(now + timedelta(hours=9)).isoformat(),
                  end_time=(now + timedelta(hours=11)).isoformat(),
                  checkin_start_time=(now + timedelta(hours=8)).isoformat(),
                  checkin_end_time=(now + timedelta(hours=10)).isoformat())
 
     # 按校区筛选
-    body = client.get("/api/v1/game", params={"campus": "西校区"}).json()
+    body = client.get("/api/v1/game", params={"campus": "新校区"}).json()
     assert body["data"]["total"] == 1
-    assert body["data"]["list"][0]["campus"] == "西校区"
+    assert body["data"]["list"][0]["campus"] == "新校区"
 
     # 关键词
     body = client.get("/api/v1/game", params={"keyword": "羽毛球C"}).json()
@@ -460,7 +460,7 @@ def test_list_games_filters_and_pagination(client):
 
     # 报名后能看到自己的报名状态
     target = body["data"]["list"][0]
-    client.post(f"/api/v1/game/{target['id']}/signup", headers=player["headers"])
+    client.post(f"/api/v1/game/{target['id']}/signup", headers=player["headers"], json={"skill_level": 3})
     body = client.get("/api/v1/game", params={"keyword": target["title"]}, headers=player["headers"]).json()
     assert body["data"]["list"][0]["my_registration_status"] == RegistrationStatus.SIGNED
 
@@ -470,7 +470,7 @@ def test_list_games_only_available_excludes_full(client):
     host = _signup_user(client, "31000015", "满员列表发起人")
     player = _signup_user(client, "31000016", "满员列表玩家")
     game = _create_game(client, host["headers"], title="未满过滤测试", max_players=2)
-    client.post(f"/api/v1/game/{game['id']}/signup", headers=player["headers"])  # 2/2 已满
+    client.post(f"/api/v1/game/{game['id']}/signup", headers=player["headers"], json={"skill_level": 3})  # 2/2 已满
 
     body = client.get("/api/v1/game", params={"keyword": "未满过滤测试", "only_available": True}).json()
     assert body["data"]["total"] == 0
@@ -495,7 +495,7 @@ def test_game_detail(client):
     host = _signup_user(client, "31000020", "详情发起人")
     player = _signup_user(client, "31000021", "详情玩家")
     game = _create_game(client, host["headers"], title="详情场", venue_name="详情场地")
-    client.post(f"/api/v1/game/{game['id']}/signup", headers=player["headers"])
+    client.post(f"/api/v1/game/{game['id']}/signup", headers=player["headers"], json={"skill_level": 3})
 
     body = client.get(f"/api/v1/game/{game['id']}", headers=host["headers"]).json()
     assert body["code"] == 0
@@ -526,7 +526,7 @@ def test_signup_success_and_duplicate(client):
     player = _signup_user(client, "31000031", "报名玩家")
     game = _create_game(client, host["headers"], title="报名场", venue_name="报名场地")
 
-    body = client.post(f"/api/v1/game/{game['id']}/signup", headers=player["headers"]).json()
+    body = client.post(f"/api/v1/game/{game['id']}/signup", headers=player["headers"], json={"skill_level": 3}).json()
     assert body["code"] == 0
     assert body["data"]["is_waitlist"] is False
     assert body["data"]["current_players"] == 2
@@ -534,7 +534,7 @@ def test_signup_success_and_duplicate(client):
     assert _get_checkin(game["id"], player["user_id"])["settled"] == 0
 
     # 重复报名
-    body = client.post(f"/api/v1/game/{game['id']}/signup", headers=player["headers"]).json()
+    body = client.post(f"/api/v1/game/{game['id']}/signup", headers=player["headers"], json={"skill_level": 3}).json()
     assert body["code"] == 40900
     assert "已报名" in body["message"]
 
@@ -554,8 +554,8 @@ def test_signup_time_conflict(client):
                           checkin_start_time=(now - timedelta(minutes=5)).isoformat(),
                           checkin_end_time=(now + timedelta(hours=3)).isoformat())
 
-    assert client.post(f"/api/v1/game/{game_a['id']}/signup", headers=player["headers"]).json()["code"] == 0
-    body = client.post(f"/api/v1/game/{game_b['id']}/signup", headers=player["headers"]).json()
+    assert client.post(f"/api/v1/game/{game_a['id']}/signup", headers=player["headers"], json={"skill_level": 3}).json()["code"] == 0
+    body = client.post(f"/api/v1/game/{game_b['id']}/signup", headers=player["headers"], json={"skill_level": 3}).json()
     assert body["code"] == 40900
     assert "时间冲突" in body["message"]
     assert "场次甲" in body["message"]
@@ -569,19 +569,19 @@ def test_signup_full_goes_waitlist(client):
     p3 = _signup_user(client, "31000053", "玩家3")
     game = _create_game(client, host["headers"], title="满员场", max_players=3)  # 发起人占1
 
-    r1 = client.post(f"/api/v1/game/{game['id']}/signup", headers=p1["headers"]).json()
-    r2 = client.post(f"/api/v1/game/{game['id']}/signup", headers=p2["headers"]).json()
+    r1 = client.post(f"/api/v1/game/{game['id']}/signup", headers=p1["headers"], json={"skill_level": 3}).json()
+    r2 = client.post(f"/api/v1/game/{game['id']}/signup", headers=p2["headers"], json={"skill_level": 3}).json()
     assert r1["data"]["current_players"] == 2
     assert r2["data"]["current_players"] == 3
 
-    body = client.post(f"/api/v1/game/{game['id']}/signup", headers=p3["headers"]).json()
+    body = client.post(f"/api/v1/game/{game['id']}/signup", headers=p3["headers"], json={"skill_level": 3}).json()
     assert body["code"] == 0
     assert body["data"]["is_waitlist"] is True
     assert body["data"]["registration"]["waitlist_order"] == 1
     assert "候补" in body["message"]
 
     # 候补者重复报名提示候补位次
-    again = client.post(f"/api/v1/game/{game['id']}/signup", headers=p3["headers"]).json()
+    again = client.post(f"/api/v1/game/{game['id']}/signup", headers=p3["headers"], json={"skill_level": 3}).json()
     assert again["code"] == 40900
     assert "候补" in again["message"]
 
@@ -597,8 +597,8 @@ def test_signup_full_rejected_when_waitlist_disabled(client, monkeypatch):
     p2 = _signup_user(client, "31000062", "玩家5")
     game = _create_game(client, host["headers"], title="满员拒绝场", max_players=2)
 
-    assert client.post(f"/api/v1/game/{game['id']}/signup", headers=p1["headers"]).json()["code"] == 0
-    body = client.post(f"/api/v1/game/{game['id']}/signup", headers=p2["headers"]).json()
+    assert client.post(f"/api/v1/game/{game['id']}/signup", headers=p1["headers"], json={"skill_level": 3}).json()["code"] == 0
+    body = client.post(f"/api/v1/game/{game['id']}/signup", headers=p2["headers"], json={"skill_level": 3}).json()
     assert body["code"] == 40900
     assert "已满" in body["message"]
 
@@ -609,7 +609,7 @@ def test_signup_min_credit_limit(client):
     poor = _signup_user(client, "31000071", "低信誉玩家", credit=50)
     game = _create_game(client, host["headers"], title="门槛场", min_credit_score=80)
 
-    body = client.post(f"/api/v1/game/{game['id']}/signup", headers=poor["headers"]).json()
+    body = client.post(f"/api/v1/game/{game['id']}/signup", headers=poor["headers"], json={"skill_level": 3}).json()
     assert body["code"] == 40900
     assert "信誉分" in body["message"] and "50" in body["message"]
 
@@ -621,7 +621,7 @@ def test_signup_after_deadline(client):
     game = _create_game(client, host["headers"], title="截止场")
     _update_game(game["id"], signup_deadline=datetime.now() - timedelta(minutes=1))
 
-    body = client.post(f"/api/v1/game/{game['id']}/signup", headers=player["headers"]).json()
+    body = client.post(f"/api/v1/game/{game['id']}/signup", headers=player["headers"], json={"skill_level": 3}).json()
     assert body["code"] == 40900
     assert "截止" in body["message"]
 
@@ -636,8 +636,8 @@ def test_exit_game_promotes_waitlist(client):
     p2 = _signup_user(client, "31000092", "候补玩家")
     game = _create_game(client, host["headers"], title="退出场", max_players=2)  # 发起人 + 1
 
-    assert client.post(f"/api/v1/game/{game['id']}/signup", headers=p1["headers"]).json()["code"] == 0
-    assert client.post(f"/api/v1/game/{game['id']}/signup", headers=p2["headers"]).json()["data"]["is_waitlist"] is True
+    assert client.post(f"/api/v1/game/{game['id']}/signup", headers=p1["headers"], json={"skill_level": 3}).json()["code"] == 0
+    assert client.post(f"/api/v1/game/{game['id']}/signup", headers=p2["headers"], json={"skill_level": 3}).json()["data"]["is_waitlist"] is True
 
     body = client.post(f"/api/v1/game/{game['id']}/exit?reason=临时有事", headers=p1["headers"]).json()
     assert body["code"] == 0
@@ -694,7 +694,7 @@ def test_verify_requires_creator(client):
     host = _signup_user(client, "31100001", "核销发起人")
     player = _signup_user(client, "31100002", "普通玩家")
     game = _create_game(client, host["headers"], title="权限校验场")
-    client.post(f"/api/v1/game/{game['id']}/signup", headers=player["headers"])
+    client.post(f"/api/v1/game/{game['id']}/signup", headers=player["headers"], json={"skill_level": 3})
 
     body = client.post(
         "/api/v1/checkin/verify",
@@ -712,7 +712,7 @@ def test_verify_success_triggers_lazy_settlement(client):
     p2 = _signup_user(client, "31100012", "到场玩家2")
     game = _create_game(client, host["headers"], title="核销成功场", max_players=5)
     for p in (p1, p2):
-        client.post(f"/api/v1/game/{game['id']}/signup", headers=p["headers"])
+        client.post(f"/api/v1/game/{game['id']}/signup", headers=p["headers"], json={"skill_level": 3})
 
     before = _get_user(p1["user_id"])["credit_score"]
 
@@ -752,7 +752,7 @@ def test_verify_is_idempotent_and_reports_reasons(client):
     player = _signup_user(client, "31100021", "玩家A")
     outsider = _signup_user(client, "31100022", "路人B")
     game = _create_game(client, host["headers"], title="幂等核销场", max_players=4)
-    client.post(f"/api/v1/game/{game['id']}/signup", headers=player["headers"])
+    client.post(f"/api/v1/game/{game['id']}/signup", headers=player["headers"], json={"skill_level": 3})
 
     # 第一次核销：1 成功 + 1 失败（未报名）
     body = client.post("/api/v1/checkin/verify",
@@ -780,7 +780,7 @@ def test_verify_late_status(client):
     host = _signup_user(client, "31100030", "核销发起人4")
     latecomer = _signup_user(client, "31100031", "迟到玩家")
     game = _create_game(client, host["headers"], title="迟到核销场", max_players=4)
-    client.post(f"/api/v1/game/{game['id']}/signup", headers=latecomer["headers"])
+    client.post(f"/api/v1/game/{game['id']}/signup", headers=latecomer["headers"], json={"skill_level": 3})
 
     # 把核销截止时间拨到过去 → 现在核销即为迟到
     _update_game(game["id"], checkin_end_time=datetime.now() - timedelta(minutes=10))
@@ -801,7 +801,7 @@ def test_verify_as_late_override(client):
     host = _signup_user(client, "31100032", "核销发起人4b")
     player = _signup_user(client, "31100033", "补签玩家")
     game = _create_game(client, host["headers"], title="指定迟到场", max_players=4)
-    client.post(f"/api/v1/game/{game['id']}/signup", headers=player["headers"])
+    client.post(f"/api/v1/game/{game['id']}/signup", headers=player["headers"], json={"skill_level": 3})
 
     body = client.post("/api/v1/checkin/verify",
                        json={"game_id": game["id"], "user_ids": [player["user_id"]], "as_late": True},
@@ -849,7 +849,7 @@ def test_verify_all_and_roster(client):
     p2 = _signup_user(client, "31100062", "玩家D")
     game = _create_game(client, host["headers"], title="一键核销场", max_players=5)
     for p in (p1, p2):
-        client.post(f"/api/v1/game/{game['id']}/signup", headers=p["headers"])
+        client.post(f"/api/v1/game/{game['id']}/signup", headers=p["headers"], json={"skill_level": 3})
 
     # 核销前名单
     roster = client.get(f"/api/v1/checkin/game/{game['id']}", headers=host["headers"]).json()
@@ -897,7 +897,7 @@ def test_verified_user_not_marked_absent(client):
     missing = _signup_user(client, "31100082", "放鸽子")
     game = _create_game(client, host["headers"], title="联动场", max_players=5)
     for p in (arrived, missing):
-        client.post(f"/api/v1/game/{game['id']}/signup", headers=p["headers"])
+        client.post(f"/api/v1/game/{game['id']}/signup", headers=p["headers"], json={"skill_level": 3})
 
     # 只核销 arrived
     client.post("/api/v1/checkin/verify",
@@ -933,7 +933,7 @@ def test_verify_triggers_ban_when_credit_too_low(client):
     host = _signup_user(client, "31100090", "低分发起人")
     low = _signup_user(client, "31100091", "临界玩家", credit=settings.CREDIT_BAN_THRESHOLD - 1)
     game = _create_game(client, host["headers"], title="触发封禁场", max_players=4)
-    client.post(f"/api/v1/game/{game['id']}/signup", headers=low["headers"])
+    client.post(f"/api/v1/game/{game['id']}/signup", headers=low["headers"], json={"skill_level": 3})
 
     # 让核销记为迟到（-3）→ 分数跌破阈值
     body = client.post("/api/v1/checkin/verify",
@@ -951,8 +951,8 @@ def test_game_members_list(client):
     p1 = _signup_user(client, "31100101", "名单玩家1")
     p2 = _signup_user(client, "31100102", "名单玩家2")
     game = _create_game(client, host["headers"], title="名单场", max_players=2)
-    client.post(f"/api/v1/game/{game['id']}/signup", headers=p1["headers"])
-    client.post(f"/api/v1/game/{game['id']}/signup", headers=p2["headers"])  # 候补
+    client.post(f"/api/v1/game/{game['id']}/signup", headers=p1["headers"], json={"skill_level": 3})
+    client.post(f"/api/v1/game/{game['id']}/signup", headers=p2["headers"], json={"skill_level": 3})  # 候补
 
     body = client.get(f"/api/v1/game/{game['id']}/members").json()
     assert body["code"] == 0

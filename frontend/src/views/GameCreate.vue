@@ -30,7 +30,7 @@ const form = reactive({
   sport_type: 3,
   title: '',
   description: '',
-  campus: '东校区',
+  campus: '老校区',
   venue_name: '',
   venue_address: '',
   start_time: '',
@@ -48,6 +48,8 @@ const form = reactive({
 })
 
 const now = new Date()
+/** 校外：场地为自由输入（球馆名/地址） */
+const isOffCampus = computed(() => form.campus === '校外')
 /** 结束时间不早于开始时间 */
 const endDisabled = (date) =>
   !form.start_time || date.getTime() < new Date(String(form.start_time)).setHours(0, 0, 0, 0)
@@ -181,15 +183,18 @@ async function submit() {
             <el-col :xs="24" :sm="12">
               <el-form-item label="校区">
                 <el-select v-model="form.campus" style="width: 100%">
-                  <el-option label="东校区" value="东校区" />
-                  <el-option label="西校区" value="西校区" />
-                  <el-option label="南区" value="南区" />
+                  <el-option label="老校区" value="老校区" />
+                  <el-option label="新校区" value="新校区" />
+                  <el-option label="校外" value="校外" />
                 </el-select>
               </el-form-item>
             </el-col>
             <el-col :xs="24" :sm="12">
-              <el-form-item label="场地名称" prop="venue_name">
-                <el-input v-model="form.venue_name" placeholder="如：东区体育馆3号场" />
+              <el-form-item :label="isOffCampus ? '球馆 / 地址（自填）' : '场地名称'" prop="venue_name">
+                <el-input
+                  v-model="form.venue_name"
+                  :placeholder="isOffCampus ? '请填写校外球馆名称或详细地址' : '请填写校内场地名称'"
+                />
               </el-form-item>
             </el-col>
           </el-row>
@@ -279,10 +284,9 @@ async function submit() {
         <div class="card side">
           <h3 class="t-card-title">报名门槛（可选）</h3>
           <el-form label-position="top">
-            <el-form-item label="最低球技要求">
+            <el-form-item label="最低水平要求">
               <el-select v-model="form.skill_level_limit" style="width: 100%">
                 <el-option label="不限" :value="0" />
-                <el-option label="新手" :value="1" />
                 <el-option label="初级" :value="2" />
                 <el-option label="中级" :value="3" />
                 <el-option label="高级" :value="4" />
