@@ -5,7 +5,11 @@
     {
       "src": "api/index.py",
       "use": "@vercel/python",
-      "config": { "maxLambdaSize": "20mb" }
+      "config": {
+        "maxLambdaSize": "20mb",
+        "memory": 1024,
+        "maxDuration": 30
+      }
     }
   ],
   "routes": [
@@ -17,11 +21,5 @@
       "path": "/api/v1/system/cron/daily",
       "schedule": "0 3 * * *"
     }
-  ],
-  "functions": {
-    "api/index.py": {
-      "memory": 1024,
-      "maxDuration": 30
-    }
-  }
+  ]
 }
