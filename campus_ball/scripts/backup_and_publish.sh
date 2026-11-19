@@ -17,8 +17,26 @@ set -euo pipefail
 SANITIZE=0
 [[ "${1:-}" == "--sanitize" ]] && SANITIZE=1
 
-REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+# ★ 自动定位仓库根目录：脚本在 <repo>/campus_ball/scripts/ 下，
+#   所以根目录是「上两级」；同时兼容把脚本放到 <repo>/scripts/ 的情况。
+#   （上一版只回退一级，导致把 campus_ball/ 当成了仓库根 → 误报找不到 .env）
+REPO_ROOT=""
+for cand in "$SCRIPT_DIR/.." "$SCRIPT_DIR/../.."; do
+  if [[ -f "$cand/campus_ball/.env" ]]; then
+    REPO_ROOT="$(cd "$cand" && pwd)"
+    break
+  fi
+done
+if [[ -z "$REPO_ROOT" ]]; then
+  echo "✗ 未能定位仓库根目录（应包含 campus_ball/.env）"
+  echo "  脚本位置：$SCRIPT_DIR"
+  echo "  请确认 .env 存在于 <仓库根>/campus_ball/.env"
+  exit 1
+fi
 cd "$REPO_ROOT"
+echo "仓库根目录：$REPO_ROOT"
 
 ENV_FILE="campus_ball/.env"
 BACKUP_DIR="$HOME/backup"
@@ -74,8 +92,18 @@ git add "$TARGET"
 git commit -m "chore: 归档数据库备份 final_backup.sql（含演示数据与演示账号）" || echo "      （无变化，跳过提交）"
 
 echo "[4/4] 推送双平台"
+# Gitee remote 不存在时自动补上（服务器通常只 clone 了 GitHub）
+if ! git remote get-url gitee >/dev/null 2>&1; then
+  git remote add gitee https://gitee.com/j_66_fish/yueqi-campus-ball.git
+  echo "      已添加 gitee 远端：https://gitee.com/j_66_fish/yueqi-campus-ball.git"
+fi
 git push origin main && echo "      ✓ GitHub(origin) 已推送" || echo "      ✗ GitHub 推送失败（网络或认证），稍后可用 git push origin main 重试"
-git push gitee main && echo "      ✓ Gitee(gitee) 已推送" || echo "      ✗ Gitee 推送失败，稍后重试"
+if git push gitee main; then
+  echo "      ✓ Gitee(gitee) 已推送"
+else
+  echo "      ✗ Gitee 推送失败（通常是服务器没有 Gitee 凭据），改用一次性 URL："
+  echo "        git push https://j_66_fish:<你的GiteeToken>@gitee.com/j_66_fish/yueqi-campus-ball.git main:main"
+fi
 
 echo
 echo "完成。仓库内路径：$TARGET"
